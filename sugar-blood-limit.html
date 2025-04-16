@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Sugar Log - The Diabetes Hub</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .widget {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            margin-bottom: 2rem;
+        }
+        
+        .widget-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .widget-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .widget-content {
+            color: #555;
+        }
+        
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-success:hover {
+            background-color: #219653;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        /* Blood Sugar Log Specific Styles */
+        .log-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .log-form {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+        
+        .data-table tr:hover {
+            background-color: #edf2f7;
+        }
+        
+        .action-icons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-icon {
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        
+        .action-icon:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background-color: #e6f7e6;
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: #fef2e0;
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: #fdeeec;
+            color: var(--danger-color);
+        }
+        
+        .log-summary {
+            background: linear-gradient(to right, #2c3e50, #4b6cb7);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-item {
+            text-align: center;
+            flex: 1;
+            padding: 0.5rem;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+        
+        .summary-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .range-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .range-normal {
+            background-color: var(--success-color);
+        }
+        
+        .range-high {
+            background-color: var(--warning-color);
+        }
+        
+        .range-critical {
+            background-color: var(--danger-color);
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-mock {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #e0f7fa, #e1f5fe, #e3f2fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            color: #777;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            height: 2px;
+            background-color: #3498db;
+            width: 90%;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+        
+        .chart-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #3498db;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .chart-point-1 { left: 10%; top: 40%; }
+        .chart-point-2 { left: 20%; top: 30%; }
+        .chart-point-3 { left: 30%; top: 60%; }
+        .chart-point-4 { left: 40%; top: 35%; }
+        .chart-point-5 { left: 50%; top: 50%; }
+        .chart-point-6 { left: 60%; top: 45%; }
+        .chart-point-7 { left: 70%; top: 55%; }
+        .chart-point-8 { left: 80%; top: 30%; }
+        .chart-point-9 { left: 90%; top: 40%; }
+        
+        .chart-title {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .chartjs-render-monitor {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .info-panel {
+            background-color: #edf2f7;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-title i {
+            margin-right: 8px;
+            color: var(--info-color);
+        }
+        
+        .info-list {
+            list-style-position: inside;
+            margin-bottom: 1rem;
+        }
+        
+        .info-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .range-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        
+        .range-table th, .range-table td {
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+        }
+        
+        .range-table th {
+            background-color: #f2f2f2;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .log-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .log-summary {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .btn-block-sm {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html" class="active"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href="frpr1.html"><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symtoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+          
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+               
+                <li><a href="glossary.html"><i>📚</i> Glossary</a></li>
+                <li><a href="About.html"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h1 class="section-title">Blood Sugar Log</h1>
+            
+            <!-- Blood Sugar Summary -->
+            <div class="log-summary">
+                <div class="summary-item">
+                    <div class="summary-value">127</div>
+                    <div class="summary-label">Average (mg/dL)</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">142</div>
+                    <div class="summary-label">Last Reading</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">89</div>
+                    <div class="summary-label">Lowest</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">183</div>
+                    <div class="summary-label">Highest</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value">82%</div>
+                    <div class="summary-label">In Range</div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Widgets -->
+            <div class="log-dashboard">
+                <!-- Chart Widget -->
+                <div class="widget">
+                    <h3 class="widget-title"><i>📈</i> Blood Sugar Trends</h3>
+                    <div class="widget-content">
+                        <div class="chart-container">
+                            <div class="chart-mock">
+                                <div class="chart-title">7-Day Blood Sugar Trend</div>
+                                <div class="chart-line"></div>
+                                <div class="chart-point chart-point-1"></div>
+                                <div class="chart-point chart-point-2"></div>
+                                <div class="chart-point chart-point-3"></div>
+                                <div class="chart-point chart-point-4"></div>
+                                <div class="chart-point chart-point-5"></div>
+                                <div class="chart-point chart-point-6"></div>
+                                <div class="chart-point chart-point-7"></div>
+                                <div class="chart-point chart-point-8"></div>
+                                <div class="chart-point chart-point-9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics Widget -->
+                <div class="widget">
+                    <h3 class="widget-title"><i>📊</i> Statistics & Insights</h3>
+                    <div class="widget-content">
+                        <p>Based on your recent readings:</p>
+                        <ul style="margin: 1rem 0 1rem 1.5rem;">
+                            <li>Morning readings are consistently higher than normal</li>
+                            <li>After-meal spikes have decreased by 15% this week</li>
+                            <li>Evening readings are stable and within target range</li>
+                            <li>Your fasting glucose has improved compared to last week</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block">View Detailed Analysis</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add New Reading Form -->
+            <div class="log-form">
+                <h3 class="widget-title"><i>➕</i> Add New Reading</h3>
+                <form>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="glucose">Blood Glucose (mg/dL)</label>
+                                <input type="number" class="form-control" id="glucose" placeholder="e.g., 120">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="readingTime">Time</label>
+                                <input type="time" class="form-control" id="readingTime">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="readingDate">Date</label>
+                                <input type="date" class="form-control" id="readingDate">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="readingType">Reading Type</label>
+                                <select class="form-control" id="readingType">
+                                    <option value="">Select type</option>
+                                    <option value="fasting">Fasting</option>
+                                    <option value="before-meal">Before Meal</option>
+                                    <option value="after-meal">After Meal (2 hours)</option>
+                                    <option value="bedtime">Bedtime</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="mealType">Meal (if applicable)</label>
+                                <select class="form-control" id="mealType">
+                                    <option value="">Select meal</option>
+                                    <option value="breakfast">Breakfast</option>
+                                    <option value="lunch">Lunch</option>
+                                    <option value="dinner">Dinner</option>
+                                    <option value="snack">Snack</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="medication">Medication (if taken)</label>
+                                <select class="form-control" id="medication">
+                                    <option value="">Select medication</option>
+                                    <option value="metformin">Metformin</option>
+                                    <option value="insulin">Insulin</option>
+                                    <option value="glipizide">Glipizide</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="Add any relevant notes about food, exercise, stress levels, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline btn-block-sm">Clear</button>
+                        <button type="submit" class="btn btn-primary btn-block-sm">Save Reading</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Reading History Table -->
+            <h2 class="section-title">Blood Sugar History</h2>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Reading (mg/dL)</th>
+                            <th>Type</th>
+                            <th>Meal</th>
+                            <th>Medication</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Apr 16, 2025 - 7:30 AM</td>
+                            <td>142</td>
+                            <td>Fasting</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="badge badge-warning">Elevated</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 15, 2025 - 9:15 PM</td>
+                            <td>118</td>
+                            <td>Bedtime</td>
+                            <td>-</td>
+                            <td>Metformin</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 15, 2025 - 2:30 PM</td>
+                            <td>156</td>
+                            <td>After Meal</td>
+                            <td>Lunch</td>
+                            <td>-</td>
+                            <td><span class="badge badge-warning">Elevated</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 15, 2025 - 12:00 PM</td>
+                            <td>105</td>
+                            <td>Before Meal</td>
+                            <td>Lunch</td>
+                            <td>-</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 15, 2025 - 7:15 AM</td>
+                            <td>135</td>
+                            <td>Fasting</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="badge badge-warning">Elevated</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 14, 2025 - 9:00 PM</td>
+                            <td>125</td>
+                            <td>Bedtime</td>
+                            <td>-</td>
+                            <td>Metformin</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon"><span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 14, 2025 - 3:00 PM</td>
+                            <td>148</td>
+                            <td>After Meal</td>
+                            <td>Lunch</td>
+                            <td>-</td>
+                            <td><span class="badge badge-warning">Elevated</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 14, 2025 - 7:00 AM</td>
+                            <td>139</td>
+                            <td>Fasting</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="badge badge-warning">Elevated</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 13, 2025 - 8:45 PM</td>
+                            <td>122</td>
+                            <td>Bedtime</td>
+                            <td>-</td>
+                            <td>Metformin</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Apr 13, 2025 - 7:30 AM</td>
+                            <td>89</td>
+                            <td>Fasting</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <span class="action-icon">✏️</span>
+                                    <span class="action-icon">🗑️</span>
+                                    <span class="action-icon">📊</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Information Panel -->
+            <div class="info-panel">
+                <h3 class="info-title"><i>ℹ️</i> Blood Sugar Target Ranges</h3>
+                <p>Recommended blood glucose levels vary depending on factors like age, time of day, and whether you have diabetes. Here are general guidelines:</p>
+                
+                <table class="range-table">
+                    <thead>
+                        <tr>
+                            <th>Time & Condition</th>
+                            <th>Target Range (mg/dL)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fasting / Before Meals</td>
+                            <td>80-130</td>
+                        </tr>
+                        <tr>
+                            <td>After Meals (2 hours)</td>
+                            <td>Less than 180</td>
+                        </tr>
+                        <tr>
+                            <td>Bedtime</td>
+                            <td>100-140</td>
+                        </tr>
+                        <tr>
+                            <td>A1C</td>
+                            <td>Less than 7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p>Note: These are general guidelines. Your healthcare provider may have set different targets for you based on your specific situation.</p>
+                
+                <h4 style="margin-top: 1rem;">Reading Indicators:</h4>
+                <ul style="list-style-type: none; margin-left: 0; padding-left: 0;">
+                    <li><span class="range-indicator range-normal"></span> <strong>Normal:</strong> Within target range</li>
+                    <li><span class="range-indicator range-high"></span> <strong>Elevated:</strong> Above target range but not critical</li>
+                    <li><span class="range-indicator range-critical"></span> <strong>Critical:</strong> Significantly out of range - medical attention may be needed</li>
+                </ul>
+                
+                <div class="form-actions" style="justify-content: flex-start; margin-top: 1.5rem;">
+                    <button class="btn btn-outline">Print Log</button>
+                    <button class="btn btn-primary">Export Data</button>
+                </div>
+            </div>
+            
+            <!-- Tips Widget -->
+            <div class="widget">
+                <h3 class="widget-title"><i>💡</i> Tips for Accurate Blood Sugar Monitoring</h3>
+                <div class="widget-content">
+                    <ol style="margin-left: 1.5rem;">
+                        <li>Wash and dry your hands before testing</li>
+                        <li>Use a fresh lancet for each test</li>
+                        <li>Apply enough blood to the test strip</li>
+                        <li>Test at consistent times each day</li>
+                        <li>Keep your meter and strips at room temperature</li>
+                        <li>Check your meter's accuracy with control solution regularly</li>
+                        <li>Record readings immediately to avoid forgetting</li>
+                        <li>Note any factors that might affect results (illness, stress, exercise)</li>
+                    </ol>
+                    <p style="margin-top: 1rem;">Remember: Accurate monitoring is essential for effective diabetes management.</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript would be added here for functionality
+        // This is just a static HTML/CSS mockup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default for the date input
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            
+            document.getElementById('readingDate').value = `${yyyy}-${mm}-${dd}`;
+            
+            // Set current time as default for the time input
+            const hours = String(today.getHours()).padStart(2, '0');
+            const minutes = String(today.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('readingTime').value = `${hours}:${minutes}`;
+        });
+    </script>
+</body>
+</html>

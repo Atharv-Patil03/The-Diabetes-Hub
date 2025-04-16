@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Causes - The Diabetes Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .intro-text {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .cause-type-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .cause-type-item {
+            padding: 0.7rem 1.2rem;
+            background-color: white;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .cause-type-item.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .cause-type-item:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .cause-lists {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .cause-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .cause-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .cause-section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .cause-section-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .cause-description {
+            margin-bottom: a.5rem;
+            line-height: 1.6;
+        }
+        
+        .cause-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .cause-item {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .cause-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        
+        .myth-fact-section {
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .myth-fact-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .myth-fact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .myth-card, .fact-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.05);
+        }
+        
+        .myth-title, .fact-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .myth-title {
+            color: var(--danger-color);
+        }
+        
+        .fact-title {
+            color: var(--success-color);
+        }
+        
+        .myth-title i, .fact-title i {
+            margin-right: 10px;
+        }
+        
+        .risk-assessment {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .risk-assessment h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .risk-assessment p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .prevention-tips {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--success-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+        
+        .prevention-tips h3 {
+            color: var(--success-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .prevention-tips h3 i {
+            margin-right: 10px;
+        }
+        
+        .prevention-list {
+            list-style: none;
+        }
+        
+        .prevention-item {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .prevention-item:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .related-content {
+            margin-top: 3rem;
+        }
+        
+        .related-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .related-articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-article {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .related-article:hover {
+            transform: translateY(-5px);
+        }
+        
+        .related-article-image {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .related-article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .related-article-content {
+            padding: 1rem;
+        }
+        
+        .related-article-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .related-article-text {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .related-article-link {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .related-article-link:hover {
+            text-decoration: underline;
+        }
+        
+        .chatbot-button {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+            font-size: 1.5rem;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .cause-lists {
+                grid-template-columns: 1fr;
+            }
+            
+            .myth-fact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .related-articles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html" class="active"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href="frpr1.html"><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symtoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+          
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+               
+                <li><a href="glossary.html"><i>📚</i> Glossary</a></li>
+                <li><a href="About.html"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1 class="page-title">Diabetes Causes</h1>
+            
+            <p class="intro-text">
+                Diabetes occurs when your body either doesn't make enough insulin or can't effectively use the insulin it produces. Understanding the causes and risk factors for different types of diabetes can help with prevention and management strategies. While some causes are beyond our control, many risk factors can be addressed through lifestyle changes.
+            </p>
+            
+            <div class="cause-type-nav">
+                <div class="cause-type-item active">All Causes</div>
+                <div class="cause-type-item">Type 1 Diabetes</div>
+                <div class="cause-type-item">Type 2 Diabetes</div>
+                <div class="cause-type-item">Gestational Diabetes</div>
+                <div class="cause-type-item">Prediabetes</div>
+            </div>
+            
+            <div class="cause-lists">
+                <div class="cause-section">
+                    <h2 class="cause-section-title"><i>🔬</i> Type 1 Diabetes Causes</h2>
+                    <p class="cause-description">
+                        Type 1 diabetes is an autoimmune condition where the body's immune system attacks and destroys the insulin-producing beta cells in the pancreas. Without enough insulin, glucose builds up in the bloodstream instead of being used by cells.
+                    </p>
+                    <ul class="cause-list">
+                        <li class="cause-item">Autoimmune reaction (body attacks its own insulin-producing cells)</li>
+                        <li class="cause-item">Genetic predisposition (inherited risk factors)</li>
+                        <li class="cause-item">Environmental triggers (such as viral infections)</li>
+                        <li class="cause-item">Family history of type 1 diabetes</li>
+                        <li class="cause-item">Presence of certain autoantibodies</li>
+                    </ul>
+                </div>
+                
+                <div class="cause-section">
+                    <h2 class="cause-section-title"><i>📊</i> Type 2 Diabetes Causes</h2>
+                    <p class="cause-description">
+                        Type 2 diabetes develops when cells become resistant to insulin or when the pancreas doesn't produce enough insulin. This is often related to lifestyle factors, but genetic predisposition also plays a role.
+                    </p>
+                    <ul class="cause-list">
+                        <li class="cause-item">Insulin resistance (cells don't respond properly to insulin)</li>
+                        <li class="cause-item">Overweight or obesity</li>
+                        <li class="cause-item">Physical inactivity</li>
+                        <li class="cause-item">Poor diet high in processed foods and added sugars</li>
+                        <li class="cause-item">Genetic factors</li>
+                        <li class="cause-item">Age (risk increases with age, especially after 45)</li>
+                        <li class="cause-item">Family history of type 2 diabetes</li>
+                        <li class="cause-item">Ethnicity (higher risk in certain populations)</li>
+                    </ul>
+                </div>
+                
+                <div class="cause-section">
+                    <h2 class="cause-section-title"><i>👶</i> Gestational Diabetes Causes</h2>
+                    <p class="cause-description">
+                        Gestational diabetes occurs during pregnancy when hormonal changes affect insulin function. The placenta produces hormones that can lead to insulin resistance, putting increased demand on the pancreas.
+                    </p>
+                    <ul class="cause-list">
+                        <li class="cause-item">Hormonal changes during pregnancy</li>
+                        <li class="cause-item">Insulin resistance due to placental hormones</li>
+                        <li class="cause-item">Being overweight before pregnancy</li>
+                        <li class="cause-item">Family history of diabetes</li>
+                        <li class="cause-item">Previous gestational diabetes</li>
+                        <li class="cause-item">Polycystic ovary syndrome (PCOS)</li>
+                        <li class="cause-item">Having given birth to a baby weighing more than 9 pounds</li>
+                        <li class="cause-item">Ethnicity (higher risk in certain populations)</li>
+                    </ul>
+                </div>
+                
+                <div class="cause-section">
+                    <h2 class="cause-section-title"><i>⚠️</i> Risk Factors You Can Control</h2>
+                    <p class="cause-description">
+                        While some risk factors like genetics and age can't be changed, many lifestyle factors contributing to diabetes risk can be modified:
+                    </p>
+                    <ul class="cause-list">
+                        <li class="cause-item">Weight management (maintaining a healthy weight)</li>
+                        <li class="cause-item">Physical activity level (staying active)</li>
+                        <li class="cause-item">Diet (balanced nutrition with limited processed foods)</li>
+                        <li class="cause-item">Smoking (quitting reduces risk)</li>
+                        <li class="cause-item">Alcohol consumption (moderation is key)</li>
+                        <li class="cause-item">Stress management</li>
+                        <li class="cause-item">Sleep habits (adequate, quality sleep)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="myth-fact-section">
+                <h3 class="myth-fact-title">Myths vs. Facts About Diabetes Causes</h3>
+                <div class="myth-fact-container">
+                    <div class="myth-card">
+                        <h4 class="myth-title"><i>❌</i> MYTH</h4>
+                        <p>Eating too much sugar directly causes diabetes.</p>
+                        <p><strong>Reality:</strong> While excessive sugar consumption can contribute to obesity, which increases type 2 diabetes risk, sugar alone doesn't cause diabetes. The relationship between diet and diabetes is complex.</p>
+                    </div>
+                    
+                    <div class="fact-card">
+                        <h4 class="fact-title"><i>✓</i> FACT</h4>
+                        <p>Being overweight is a significant risk factor for type 2 diabetes.</p>
+                        <p><strong>Science:</strong> Excess body fat, especially around the abdomen, increases insulin resistance, making it harder for insulin to work effectively.</p>
+                    </div>
+                    
+                    <div class="myth-card">
+                        <h4 class="myth-title"><i>❌</i> MYTH</h4>
+                        <p>Type 1 diabetes is caused by eating too many sweets as a child.</p>
+                        <p><strong>Reality:</strong> Type 1 diabetes is an autoimmune condition not caused by diet or lifestyle. It results from the immune system attacking insulin-producing cells.</p>
+                    </div>
+                    
+                    <div class="fact-card">
+                        <h4 class="fact-title"><i>✓</i> FACT</h4>
+                        <p>Genetics play a role in all types of diabetes.</p>
+                        <p><strong>Science:</strong> While environmental factors are important, genetic predisposition affects your likelihood of developing any type of diabetes.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="prevention-tips">
+                <h3><i>🛡️</i> Prevention Strategies for Type 2 Diabetes</h3>
+                <p>Research shows that these lifestyle changes can significantly reduce the risk of developing type 2 diabetes:</p>
+                <ul class="prevention-list">
+                    <li class="prevention-item">Maintain a healthy weight or lose 5-7% of body weight if overweight</li>
+                    <li class="prevention-item">Engage in regular physical activity (at least 150 minutes per week)</li>
+                    <li class="prevention-item">Follow a balanced diet rich in whole foods</li>
+                    <li class="prevention-item">Limit refined carbohydrates and added sugars</li>
+                    <li class="prevention-item">Incorporate more fiber-rich foods</li>
+                    <li class="prevention-item">Quit smoking</li>
+                    <li class="prevention-item">Limit alcohol consumption</li>
+                    <li class="prevention-item">Monitor and manage blood pressure and cholesterol levels</li>
+                    <li class="prevention-item">Get regular health check-ups to catch prediabetes early</li>
+                </ul>
+            </div>
+            
+            <div class="risk-assessment">
+                <h3>Assess Your Diabetes Risk</h3>
+                <p>Take our quick risk assessment quiz to understand your personal risk factors for developing diabetes. This tool can help identify areas where lifestyle changes might be beneficial.</p>
+                <a href="#" class="btn btn-primary">Take Risk Assessment</a>
+            </div>
+            
+            <div class="related-content">
+                <h3>Related Resources</h3>
+                <div class="related-articles">
+                    <div class="related-article">
+                        <div class="related-article-image">
+                            <img src="/api/placeholder/300/150" alt="Diabetes Prevention">
+                        </div>
+                        <div class="related-article-content">
+                            <h4 class="related-article-title">Diabetes Prevention Program</h4>
+                            <p class="related-article-text">Learn about scientifically proven strategies to prevent or delay the onset of type 2 diabetes.</p>
+                            <a href="#" class="related-article-link">Read More →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="related-article">
+                        <div class="related-article-image">
+                            <img src="/api/placeholder/300/150" alt="Genetic Testing">
+                        </div>
+                        <div class="related-article-content">
+                            <h4 class="related-article-title">Genetic Factors in Diabetes</h4>
+                            <p class="related-article-text">Understanding the hereditary aspects of diabetes and what it means for family planning.</p>
+                            <a href="#" class="related-article-link">Read More →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="related-article">
+                        <div class="related-article-image">
+                            <img src="/api/placeholder/300/150" alt="Diabetes Research">
+                        </div>
+                        <div class="related-article-content">
+                            <h4 class="related-article-title">Latest Research on Diabetes Causes</h4>
+                            <p class="related-article-text">Explore cutting-edge research on environmental triggers and genetic factors in diabetes development.</p>
+                            <a href="#" class="related-article-link">Read More →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chatbot-button" title="Chat with DiabetesBot">
+        💬
+    </div>
+</body>
+</html>

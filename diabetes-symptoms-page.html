@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Symptoms - The Diabetes Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .intro-text {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .symptom-type-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .symptom-type-item {
+            padding: 0.7rem 1.2rem;
+            background-color: white;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .symptom-type-item.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .symptom-type-item:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .symptom-lists {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .symptom-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .symptom-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .symptom-section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .symptom-section-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .symptom-list {
+            list-style: none;
+        }
+        
+        .symptom-item {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .symptom-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        
+        .emergency-symptoms {
+            background-color: #fce8e6;
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+        
+        .emergency-symptoms h3 {
+            color: var(--danger-color);
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .emergency-symptoms h3 i {
+            margin-right: 10px;
+        }
+        
+        .emergency-symptoms ul {
+            list-style: none;
+        }
+        
+        .emergency-symptoms li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .emergency-symptoms li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .symptom-checker {
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .symptom-checker h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .symptom-checker p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .related-content {
+            margin-top: 3rem;
+        }
+        
+        .related-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .related-articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .related-article {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .related-article:hover {
+            transform: translateY(-5px);
+        }
+        
+        .related-article-image {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .related-article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .related-article-content {
+            padding: 1rem;
+        }
+        
+        .related-article-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .related-article-text {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .related-article-link {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .related-article-link:hover {
+            text-decoration: underline;
+        }
+        
+        .chatbot-button {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+            font-size: 1.5rem;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .symptom-lists {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .related-articles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html" class="active"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href="frpr1.html"><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symtoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+          
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+               
+                <li><a href="glossary.html"><i>📚</i> Glossary</a></li>
+                <li><a href="About.html"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1 class="page-title">Diabetes Symptoms</h1>
+            
+            <p class="intro-text">
+                Diabetes symptoms can vary depending on how much your blood sugar is elevated. Some people, especially those with prediabetes or type 2 diabetes, may not experience symptoms initially. In type 1 diabetes, symptoms often appear quickly and are more severe. Recognizing the signs and symptoms of diabetes is crucial for early diagnosis and treatment to prevent complications.
+            </p>
+            
+            <div class="symptom-type-nav">
+                <div class="symptom-type-item active">All Symptoms</div>
+                <div class="symptom-type-item">Type 1 Diabetes</div>
+                <div class="symptom-type-item">Type 2 Diabetes</div>
+                <div class="symptom-type-item">Gestational Diabetes</div>
+                <div class="symptom-type-item">Prediabetes</div>
+            </div>
+            
+            <div class="symptom-lists">
+                <div class="symptom-section">
+                    <h2 class="symptom-section-title"><i>🩸</i> Common Symptoms</h2>
+                    <ul class="symptom-list">
+                        <li class="symptom-item">Increased thirst and frequent urination</li>
+                        <li class="symptom-item">Extreme hunger</li>
+                        <li class="symptom-item">Unexplained weight loss</li>
+                        <li class="symptom-item">Fatigue and weakness</li>
+                        <li class="symptom-item">Blurred vision</li>
+                        <li class="symptom-item">Slow-healing sores</li>
+                        <li class="symptom-item">Frequent infections</li>
+                        <li class="symptom-item">Numbness or tingling in hands or feet</li>
+                    </ul>
+                </div>
+                
+                <div class="symptom-section">
+                    <h2 class="symptom-section-title"><i>🔬</i> Type 1 Specific</h2>
+                    <ul class="symptom-list">
+                        <li class="symptom-item">Sudden onset of symptoms</li>
+                        <li class="symptom-item">Dramatic weight loss</li>
+                        <li class="symptom-item">Nausea and vomiting</li>
+                        <li class="symptom-item">Fruity-smelling breath</li>
+                        <li class="symptom-item">Stomach pain</li>
+                        <li class="symptom-item">Mood changes and irritability</li>
+                        <li class="symptom-item">Bedwetting in children who previously didn't wet the bed</li>
+                    </ul>
+                </div>
+                
+                <div class="symptom-section">
+                    <h2 class="symptom-section-title"><i>📋</i> Type 2 Specific</h2>
+                    <ul class="symptom-list">
+                        <li class="symptom-item">Gradual onset of symptoms</li>
+                        <li class="symptom-item">Areas of darkened skin (acanthosis nigricans)</li>
+                        <li class="symptom-item">Recurrent yeast infections</li>
+                        <li class="symptom-item">Erectile dysfunction in men</li>
+                        <li class="symptom-item">Vaginal dryness in women</li>
+                        <li class="symptom-item">Unexpected weight gain</li>
+                        <li class="symptom-item">Increased hunger after eating</li>
+                    </ul>
+                </div>
+                
+                <div class="symptom-section">
+                    <h2 class="symptom-section-title"><i>👶</i> Gestational Diabetes</h2>
+                    <ul class="symptom-list">
+                        <li class="symptom-item">Usually no noticeable symptoms</li>
+                        <li class="symptom-item">Increased thirst (sometimes)</li>
+                        <li class="symptom-item">Frequent urination (sometimes)</li>
+                        <li class="symptom-item">Fatigue (often confused with normal pregnancy)</li>
+                        <li class="symptom-item">Sugar in urine (detected during prenatal screening)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="emergency-symptoms">
+                <h3><i>⚠️</i> When to Seek Emergency Help</h3>
+                <p>If you experience any of these symptoms, seek immediate medical attention as they may indicate diabetic ketoacidosis (DKA) or hyperosmolar hyperglycemic state (HHS), which are life-threatening emergencies:</p>
+                <ul>
+                    <li>Fruity-smelling breath or a "fruity" odor on your breath</li>
+                    <li>Confusion or difficulty concentrating</li>
+                    <li>Shortness of breath</li>
+                    <li>Abdominal pain</li>
+                    <li>Loss of consciousness</li>
+                    <li>Very dry mouth</li>
+                    <li>Rapid heartbeat</li>
+                    <li>Very high blood sugar levels</li>
+                </ul>
+            </div>
+            
+          
+                    
+                    
+                  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chatbot-button" title="Chat with DiabetesBot">
+        💬
+    </div>
+</body>
+</html>

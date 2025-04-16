@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Glossary - The Diabetes Hub</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .glossary-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .alphabet-nav a {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .alphabet-nav a:hover,
+        .alphabet-nav a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .glossary-letter {
+            margin-bottom: 2rem;
+        }
+        
+        .letter-heading {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+            font-weight: bold;
+        }
+        
+        .glossary-terms {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .glossary-term {
+            border-left: 3px solid var(--accent-color);
+            padding: 0.5rem 1rem;
+            background-color: var(--light-bg);
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .term-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+        
+        .term-definition {
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .glossary-terms {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .alphabet-nav {
+                gap: 0.3rem;
+            }
+            
+            .alphabet-nav a {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href=""><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symptoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+                <li><a href="/glossary.html" class="active"><i>📚</i> Glossary</a></li>
+                <li><a href="#"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h1 class="section-title">Diabetes Glossary</h1>
+            
+            <div class="glossary-container">
+                <div class="alphabet-nav">
+                    <a href="#A">A</a>
+                    <a href="#B">B</a>
+                    <a href="#C">C</a>
+                    <a href="#D">D</a>
+                    <a href="#E">E</a>
+                    <a href="#F">F</a>
+                    <a href="#G">G</a>
+                    <a href="#H">H</a>
+                    <a href="#I">I</a>
+                    <a href="#J">J</a>
+                    <a href="#K">K</a>
+                    <a href="#L">L</a>
+                    <a href="#M">M</a>
+                    <a href="#N">N</a>
+                    <a href="#O">O</a>
+                    <a href="#P">P</a>
+                    <a href="#Q">Q</a>
+                    <a href="#R">R</a>
+                    <a href="#S">S</a>
+                    <a href="#T">T</a>
+                    <a href="#U">U</a>
+                    <a href="#V">V</a>
+                    <a href="#W">W</a>
+                    <a href="#X">X</a>
+                    <a href="#Y">Y</a>
+                    <a href="#Z">Z</a>
+                </div>
+                
+                <!-- Letter A -->
+                <div id="A" class="glossary-letter">
+                    <h2 class="letter-heading">A</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">A1C (HbA1c)</div>
+                            <div class="term-definition">A blood test that measures average blood glucose levels over the past 2-3 months. It reflects the percentage of hemoglobin proteins in your blood that are glycated (coated with sugar).</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Acanthosis Nigricans</div>
+                            <div class="term-definition">A skin condition characterized by dark, thick, velvety skin in body folds and creases, often associated with insulin resistance.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Autoimmune Disorder</div>
+                            <div class="term-definition">A condition where the immune system attacks the body's own cells. Type 1 diabetes is an autoimmune disorder where the immune system destroys insulin-producing beta cells.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter B -->
+                <div id="B" class="glossary-letter">
+                    <h2 class="letter-heading">B</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Basal Insulin</div>
+                            <div class="term-definition">Long-acting insulin that's released steadily throughout the day to keep blood glucose levels stable during fasting periods.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Beta Cells</div>
+                            <div class="term-definition">Cells in the pancreas that produce and release insulin in response to blood glucose levels.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Blood Glucose Meter</div>
+                            <div class="term-definition">A device that measures the concentration of glucose in the blood, typically used by people with diabetes to monitor their blood sugar levels.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter C -->
+                <div id="C" class="glossary-letter">
+                    <h2 class="letter-heading">C</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">CGM (Continuous Glucose Monitor)</div>
+                            <div class="term-definition">A device that measures glucose levels in the interstitial fluid continuously throughout the day and night, providing real-time glucose readings.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Carbohydrate Counting</div>
+                            <div class="term-definition">A meal planning approach where carbohydrates in food are counted to help manage blood glucose levels.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter D -->
+                <div id="D" class="glossary-letter">
+                    <h2 class="letter-heading">D</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Dawn Phenomenon</div>
+                            <div class="term-definition">An early-morning (usually between 2 a.m. and 8 a.m.) rise in blood glucose levels due to the release of hormones.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Diabetic Ketoacidosis (DKA)</div>
+                            <div class="term-definition">A serious complication of diabetes characterized by high blood sugar, ketones in the blood, and acidosis. It's a medical emergency requiring immediate treatment.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Diabetic Neuropathy</div>
+                            <div class="term-definition">Nerve damage caused by high blood glucose levels, leading to symptoms like pain, tingling, or numbness, typically in the extremities.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter E -->
+                <div id="E" class="glossary-letter">
+                    <h2 class="letter-heading">E</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Endocrinologist</div>
+                            <div class="term-definition">A physician who specializes in the endocrine system and treats conditions like diabetes.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Estimated Average Glucose (eAG)</div>
+                            <div class="term-definition">An estimate of average blood glucose derived from A1C results, expressed in the same units as daily glucose measurements (mg/dL or mmol/L).</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter F -->
+                <div id="F" class="glossary-letter">
+                    <h2 class="letter-heading">F</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Fasting Blood Glucose</div>
+                            <div class="term-definition">Blood glucose level after at least 8 hours of fasting. Used to diagnose diabetes and monitor glucose control.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Flash Glucose Monitoring</div>
+                            <div class="term-definition">A system for monitoring glucose levels where a sensor on the skin provides glucose readings when scanned with a reader device.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter G -->
+                <div id="G" class="glossary-letter">
+                    <h2 class="letter-heading">G</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Gestational Diabetes</div>
+                            <div class="term-definition">A type of diabetes that develops during pregnancy and typically resolves after childbirth, but increases risk for type 2 diabetes later in life.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Glucose Tolerance Test</div>
+                            <div class="term-definition">A test that measures how well your body processes glucose, used to diagnose diabetes and gestational diabetes.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Glycemic Index</div>
+                            <div class="term-definition">A measure of how quickly carbohydrates in food raise blood glucose levels compared to pure glucose.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter H -->
+                <div id="H" class="glossary-letter">
+                    <h2 class="letter-heading">H</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Hyperglycemia</div>
+                            <div class="term-definition">High blood glucose levels, typically above 180 mg/dL (10 mmol/L), which can lead to symptoms like increased thirst, frequent urination, and fatigue.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Hypoglycemia</div>
+                            <div class="term-definition">Low blood glucose levels, typically below 70 mg/dL (3.9 mmol/L), which can cause symptoms like shakiness, sweating, confusion, and in severe cases, loss of consciousness.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter I -->
+                <div id="I" class="glossary-letter">
+                    <h2 class="letter-heading">I</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Insulin</div>
+                            <div class="term-definition">A hormone produced by the pancreas that allows cells to use glucose for energy. People with diabetes have insufficient insulin production or insulin resistance.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Insulin Pump</div>
+                            <div class="term-definition">A small device that delivers insulin continuously throughout the day through a catheter placed under the skin.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Insulin Resistance</div>
+                            <div class="term-definition">A condition where cells in the body don't respond properly to insulin, causing the pancreas to produce more insulin to maintain normal blood glucose levels.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter K -->
+                <div id="K" class="glossary-letter">
+                    <h2 class="letter-heading">K</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Ketones</div>
+                            <div class="term-definition">Chemicals produced when the body breaks down fat for energy when there isn't enough insulin to use glucose. High levels can lead to diabetic ketoacidosis.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter L -->
+                <div id="L" class="glossary-letter">
+                    <h2 class="letter-heading">L</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Lancet</div>
+                            <div class="term-definition">A small, sharp needle used to prick the skin for blood glucose testing.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter M -->
+                <div id="M" class="glossary-letter">
+                    <h2 class="letter-heading">M</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Metformin</div>
+                            <div class="term-definition">An oral medication commonly used to treat type 2 diabetes by reducing glucose production in the liver and improving insulin sensitivity.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Monogenic Diabetes</div>
+                            <div class="term-definition">A rare form of diabetes caused by mutations in a single gene, including Maturity Onset Diabetes of the Young (MODY).</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter P -->
+                <div id="P" class="glossary-letter">
+                    <h2 class="letter-heading">P</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Pancreas</div>
+                            <div class="term-definition">An organ behind the stomach that produces insulin and other hormones as well as digestive enzymes.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Polydipsia</div>
+                            <div class="term-definition">Excessive thirst, a common symptom of diabetes.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Polyuria</div>
+                            <div class="term-definition">Excessive urination, a common symptom of diabetes caused by the body's attempt to remove excess glucose through urine.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter R -->
+                <div id="R" class="glossary-letter">
+                    <h2 class="letter-heading">R</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Retinopathy</div>
+                            <div class="term-definition">Damage to the retina of the eye caused by diabetes, which can lead to vision problems or blindness if left untreated.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter S -->
+                <div id="S" class="glossary-letter">
+                    <h2 class="letter-heading">S</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">SGLT2 Inhibitors</div>
+                            <div class="term-definition">A class of medications that work by preventing the kidneys from reabsorbing glucose, allowing it to be excreted in urine.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Sulfonylureas</div>
+                            <div class="term-definition">A class of oral medications that stimulate the pancreas to release more insulin to lower blood glucose levels.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Letter T -->
+                <div id="T" class="glossary-letter">
+                    <h2 class="letter-heading">T</h2>
+                    <div class="glossary-terms">
+                        <div class="glossary-term">
+                            <div class="term-name">Time in Range (TIR)</div>
+                            <div class="term-definition">The percentage of time that a person's blood glucose levels are within their target range, typically measured using CGM data.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Type 1 Diabetes</div>
+                            <div class="term-definition">An autoimmune condition where the immune system destroys insulin-producing beta cells in the pancreas, requiring insulin therapy for life.</div>
+                        </div>
+                        <div class="glossary-term">
+                            <div class="term-name">Type 2 Diabetes</div>
+                            <div class="term-definition">A metabolic disorder characterized by insulin resistance and relative insulin deficiency, often associated with lifestyle factors and genetics.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="#" class="back-to-top">↑</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

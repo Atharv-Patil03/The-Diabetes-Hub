@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1C Converter - The Diabetes Hub</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+        }
+        
+        /* Same CSS as carb-calculator.html, omitted for brevity */
+        /* Include the same CSS styling from carb-calculator.html here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-description {
+            color: #555;
+            max-width: 800px;
+        }
+        
+        .tool-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 800px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            border-left: 4px solid var(--accent-color);
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+        }
+        
+        .result-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .result-value {
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .result-text {
+            color: #555;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h3 class="sidebar-title">Diabetes Tools</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/blood-sugar-log.html"><i class="fas fa-chart-line"></i> Blood Glucose Tracker</a></li>
+                <li><a href="/medication-reminder"><i class="fas fa-pills"></i> Medication Reminder</a></li>
+                <li><a href="/carb-calculator.html" class="active"><i class="fas fa-calculator"></i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter"><i class="fas fa-exchange-alt"></i> A1C Converter</a></li>
+                <li><a href="/articles"><i class="fas fa-newspaper"></i> Articles</a></li>
+                <li><a href="/community"><i class="fas fa-users"></i> Community</a></li>
+                <li><a href="/settings"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">A1C Converter</h1>
+                <p class="page-description">Convert between A1C percentage and estimated Average Glucose (eAG) in mg/dL or mmol/L. Understanding your A1C levels is crucial for managing diabetes effectively.</p>
+            </div>
+            
+            <div class="tool-container">
+                <form id="a1c-converter-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="conversion-type">Conversion Type:</label>
+                            <select id="conversion-type" name="conversion-type">
+                                <option value="a1c-to-glucose">A1C to Average Glucose</option>
+                                <option value="glucose-to-a1c">Average Glucose to A1C</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="a1c-input" class="form-row">
+                        <div class="form-group">
+                            <label for="a1c-value">A1C Value (%):</label>
+                            <input type="number" id="a1c-value" name="a1c-value" min="3" max="20" step="0.1" placeholder="Enter A1C percentage">
+                        </div>
+                    </div>
+                    
+                    <div id="glucose-input" class="form-row" style="display: none;">
+                        <div class="form-group">
+                            <label for="glucose-value">Average Glucose Value:</label>
+                            <input type="number" id="glucose-value" name="glucose-value" min="30" max="400" step="1" placeholder="Enter glucose value">
+                        </div>
+                        <div class="form-group">
+                            <label for="glucose-unit">Unit:</label>
+                            <select id="glucose-unit" name="glucose-unit">
+                                <option value="mg/dL">mg/dL</option>
+                                <option value="mmol/L">mmol/L</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+                
+                <div id="result" class="result-container">
+                    <h3 class="result-title">Conversion Result</h3>
+                    <div class="result-value" id="conversion-result">-</div>
+                    <p class="result-text" id="result-explanation"></p>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 2rem;">
+                <h3 class="card-title">A1C to Average Glucose Conversion Table</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>A1C (%)</th>
+                            <th>eAG (mg/dL)</th>
+                            <th>eAG (mmol/L)</th>
+                            <th>Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5.0</td>
+                            <td>97</td>
+                            <td>5.4</td>
+                            <td>Normal</td>
+                        </tr>
+                        <tr>
+                            <td>5.5</td>
+                            <td>111</td>
+                            <td>6.2</td>
+                            <td>Normal</td>
+                        </tr>
+                        <tr>
+                            <td>6.0</td>
+                            <td>126</td>
+                            <td>7.0</td>
+                            <td>Normal</td>
+                        </tr>
+                        <tr>
+                            <td>6.5</td>
+                            <td>140</td>
+                            <td>7.8</td>
+                            <td>Prediabetes</td>
+                        </tr>
+                        <tr>
+                            <td>7.0</td>
+                            <td>154</td>
+                            <td>8.6</td>
+                            <td>Diabetes (Goal)</td>
+                        </tr>
+                        <tr>
+                            <td>7.5</td>
+                            <td>169</td>
+                            <td>9.4</td>
+                            <td>Diabetes</td>
+                        </tr>
+                        <tr>
+                            <td>8.0</td>
+                            <td>183</td>
+                            <td>10.2</td>
+                            <td>Diabetes</td>
+                        </tr>
+                        <tr>
+                            <td>8.5</td>
+                            <td>197</td>
+                            <td>10.9</td>
+                            <td>Diabetes (High)</td>
+                        </tr>
+                        <tr>
+                            <td>9.0</td>
+                            <td>212</td>
+                            <td>11.8</td>
+                            <td>Diabetes (High)</td>
+                        </tr>
+                        <tr>
+                            <td>10.0</td>
+                            <td>240</td>
+                            <td>13.3</td>
+                            <td>Diabetes (Very High)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Understanding A1C</h3>
+                <p>A1C (also called HbA1c or glycated hemoglobin) is a blood test that reflects your average blood glucose levels over the past 2-3 months. It shows what percentage of your hemoglobin is coated with sugar (glycated).</p>
+                <p>For most adults with diabetes, the American Diabetes Association recommends an A1C target of less than 7%. Higher targets may be appropriate for some individuals depending on their specific health conditions.</p>
+                <ul style="margin-top: 1rem; margin-left: 1.5rem;">
+                    <li><strong>Below 5.7%:</strong> Normal</li>
+                    <li><strong>5.7% to 6.4%:</strong> Prediabetes</li>
+                    <li><strong>6.5% or higher:</strong> Diabetes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const conversionTypeSelect = document.getElementById('conversion-type');
+            const a1cInput = document.getElementById('a1c-input');
+            const glucoseInput = document.getElementById('glucose-input');
+            const a1cConverterForm = document.getElementById('a1c-converter-form');
+            const resultContainer = document.getElementById('result');
+            const conversionResult = document.getElementById('conversion-result');
+            const resultExplanation = document.getElementById('result-explanation');
+            
+            // Toggle input fields based on conversion type
+            conversionTypeSelect.addEventListener('change', function() {
+                if (this.value === 'a1c-to-glucose') {
+                    a1cInput.style.display = 'flex';
+                    glucoseInput.style.display = 'none';
+                } else {
+                    a1cInput.style.display = 'none';
+                    glucoseInput.style.display = 'flex';
+                }
+            });
+            
+            // Handle form submission
+            a1cConverterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const conversionType = conversionTypeSelect.value;
+                
+                if (conversionType === 'a1c-to-glucose') {
+                    const a1cValue = parseFloat(document.getElementById('a1c-value').value);
+                    
+                    if (isNaN(a1cValue)) {
+                        alert('Please enter a valid A1C value.');
+                        return;
+                    }
+                    
+                    // Formula: eAG (mg/dL) = (28.7 × A1C) - 46.7
+                    const eAGmgdl = (28.7 * a1cValue) - 46.7;
+                    // Convert to mmol/L: mg/dL ÷ 18
+                    const eAGmmol = eAGmgdl / 18;
+                    
+                    conversionResult.textContent = `${eAGmgdl.toFixed(0)} mg/dL (${eAGmmol.toFixed(1)} mmol/L)`;
+                    
+                    // Provide interpretation
+                    let interpretation = '';
+                    if (a1cValue < 5.7) {
+                        interpretation = 'This A1C level is in the normal range.';
+                    } else if (a1cValue < 6.5) {
+                        interpretation = 'This A1C level indicates prediabetes. Consider discussing lifestyle changes with your healthcare provider.';
+                    } else if (a1cValue < 7.0) {
+                        interpretation = 'This A1C level indicates diabetes but is within the general target range. Consult with your healthcare provider for personalized guidance.';
+                    } else if (a1cValue < 8.0) {
+                        interpretation = 'This A1C level indicates diabetes and is slightly above the general target range. Discuss management strategies with your healthcare provider.';
+                    } else {
+                        interpretation = 'This A1C level indicates diabetes and is significantly above the target range. Please consult with your healthcare provider promptly to adjust your diabetes management plan.';
+                    }
+                    
+                    resultExplanation.textContent = interpretation;
+                    
+                } else {
+                    const glucoseValue = parseFloat(document.getElementById('glucose-value').value);
+                    const glucoseUnit = document.getElementById('glucose-unit').value;
+                    
+                    if (isNaN(glucoseValue)) {
+                        alert('Please enter a valid glucose value.');
+                        return;
+                    }
+                    
+                    let glucoseMgdl = glucoseValue;
+                    if (glucoseUnit === 'mmol/L') {
+                        // Convert mmol/L to mg/dL: mmol/L × 18
+                        glucoseMgdl = glucoseValue * 18;
+                    }
+                    
+                    // Formula: A1C = (eAG + 46.7) ÷ 28.7
+                    const a1c = (glucoseMgdl + 46.7) / 28.7;
+                    
+                    conversionResult.textContent = `${a1c.toFixed(1)}%`;
+                    
+                    // Provide interpretation
+                    let interpretation = '';
+                    if (a1c < 5.7) {
+                        interpretation = 'This estimated A1C level is in the normal range.';
+                    } else if (a1c < 6.5) {
+                        interpretation = 'This estimated A1C level indicates prediabetes. Consider discussing lifestyle changes with your healthcare provider.';
+                    } else if (a1c < 7.0) {
+                        interpretation = 'This estimated A1C level indicates diabetes but is within the general target range. Consult with your healthcare provider for personalized guidance.';
+                    } else if (a1c < 8.0) {
+                        interpretation = 'This estimated A1C level indicates diabetes and is slightly above the general target range. Discuss management strategies with your healthcare provider.';
+                    } else {
+                        interpretation = 'This estimated A1C level indicates diabetes and is significantly above the target range. Please consult with your healthcare provider promptly to adjust your diabetes management plan.';
+                    }
+                    
+                    resultExplanation.textContent = interpretation;
+                }
+                
+                resultContainer.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

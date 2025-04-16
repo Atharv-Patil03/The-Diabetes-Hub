@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treatment Options - The Diabetes Hub</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .treatment-intro {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .treatment-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .table-of-contents {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            width: fit-content;
+            min-width: 250px;
+        }
+        
+        .toc-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list {
+            list-style-position: inside;
+        }
+        
+        .toc-item {
+            margin-bottom: 0.3rem;
+        }
+        
+        .toc-link {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .toc-link:hover {
+            text-decoration: underline;
+        }
+        
+        .treatment-category {
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .treatment-category-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .treatment-category-header i {
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+        }
+        
+        .treatment-category-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .treatment-category-content {
+            padding: 1.5rem;
+        }
+        
+        .treatment-category-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .treatment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .treatment-card {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 1.2rem;
+            border-left: 4px solid var(--accent-color);
+            transition: transform 0.3s;
+        }
+        
+        .treatment-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .treatment-card-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .treatment-card-title i {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+        
+        .treatment-card p {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .treatment-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .effectiveness {
+            display: flex;
+            align-items: center;
+        }
+        
+        .effectiveness-rating {
+            display: inline-block;
+            width: 60px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin: 0 5px;
+            position: relative;
+        }
+        
+        .effectiveness-fill {
+            position: absolute;
+            height: 100%;
+            border-radius: 4px;
+            background-color: var(--accent-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-table th, 
+        .comparison-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comparison-table th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .faq-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .faq-item {
+            margin-bottom: 1.2rem;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 1.2rem;
+        }
+        
+        .faq-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .faq-question {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .faq-question i {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+        
+        .chatbot-button {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .references {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .reference-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .reference-list {
+            list-style-position: inside;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .reference-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .reference-link {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .treatment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html" class="active"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href="frpr1.html"><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symtoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+          
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+               
+                <li><a href="glossary.html"><i>📚</i> Glossary</a></li>
+                <li><a href="About.html"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h1 class="section-title">Diabetes Treatment Options</h1>
+            
+            <div class="treatment-intro">
+                <p>Diabetes management requires a comprehensive, personalized approach. Modern treatment options range from lifestyle modifications to advanced medications and technologies. The right treatment plan depends on your diabetes type, health status, preferences, and goals.</p>
+                
+                <p>This guide provides an overview of available diabetes treatment options, from standard approaches to emerging therapies. Work with your healthcare team to create a tailored plan that best fits your needs.</p>
+            </div>
+            
+            <div class="table-of-contents">
+                <h3 class="toc-title">On This Page</h3>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#medications" class="toc-link">Medication Options</a></li>
+                    <li class="toc-item"><a href="#insulin-therapy" class="toc-link">Insulin Therapy</a></li>
+                    <li class="toc-item"><a href="#lifestyle" class="toc-link">Lifestyle Interventions</a></li>
+                    <li class="toc-item"><a href="#monitoring" class="toc-link">Blood Glucose Monitoring</a></li>
+                    <li class="toc-item"><a href="#advanced" class="toc-link">Advanced Technologies</a></li>
+                    <li class="toc-item"><a href="#surgical" class="toc-link">Surgical Options</a></li>
+                    <li class="toc-item"><a href="#comparison" class="toc-link">Treatment Comparison</a></li>
+                    <li class="toc-item"><a href="#faq" class="toc-link">Frequently Asked Questions</a></li>
+                </ul>
+            </div>
+            
+            <!-- Medication Options Section -->
+            <div id="medications" class="treatment-category">
+                <div class="treatment-category-header">
+                    <i>💊</i>
+                    <h2>Medication Options</h2>
+                </div>
+                <div class="treatment-category-content">
+                    <p>Various medications help manage diabetes by affecting how your body produces or uses insulin. Each class works differently and may be prescribed alone or in combination.</p>
+                    
+                    <div class="treatment-grid">
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>Metformin</h3>
+                            <p>First-line medication for type 2 diabetes that reduces glucose production in the liver and improves insulin sensitivity.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>Sulfonylureas</h3>
+                            <p>Stimulate insulin production in the pancreas. Examples include glipizide, glyburide, and glimepiride.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>DPP-4 Inhibitors</h3>
+                            <p>Improve blood glucose control without causing weight gain. Include sitagliptin, saxagliptin, and linagliptin.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 70%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>SGLT2 Inhibitors</h3>
+                            <p>Lower blood glucose by preventing kidneys from reabsorbing sugar. Include empagliflozin, dapagliflozin, and canagliflozin.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>GLP-1 Receptor Agonists</h3>
+                            <p>Stimulate insulin release and reduce appetite. Include semaglutide, dulaglutide, and liraglutide.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 90%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💊</i>Thiazolidinediones</h3>
+                            <p>Improve insulin sensitivity in muscle and fat tissues. Include pioglitazone and rosiglitazone.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 65%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insulin Therapy Section -->
+            <div id="insulin-therapy" class="treatment-category">
+                <div class="treatment-category-header">
+                    <i>💉</i>
+                    <h2>Insulin Therapy</h2>
+                </div>
+                <div class="treatment-category-content">
+                    <p>Insulin therapy is essential for all people with type 1 diabetes and may be needed for some with type 2 diabetes. Several types of insulin are available, each with different onset times and durations.</p>
+                    
+                    <div class="treatment-grid">
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Rapid-Acting Insulin</h3>
+                            <p>Begins working within 15 minutes and lasts 2-4 hours. Used at mealtimes. Examples include lispro, aspart, and glulisine.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 95%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Short-Acting Insulin</h3>
+                            <p>Begins working within 30 minutes and lasts 3-6 hours. Regular or R insulin is the most common type.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 70%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Intermediate-Acting Insulin</h3>
+                            <p>Begins working within 2-4 hours and lasts 12-18 hours. NPH insulin is the most common type.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 50%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Long-Acting Insulin</h3>
+                            <p>Begins working several hours after injection and lasts up to 24 hours. Examples include glargine, detemir, and degludec.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 30%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Premixed Insulin</h3>
+                            <p>Combines intermediate and rapid/short-acting insulin in fixed ratios, such as 70/30 or 75/25.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 60%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>💉</i>Inhaled Insulin</h3>
+                            <p>Rapid-acting insulin taken via inhaler before meals, providing an alternative to injections.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Speed of Action:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lifestyle Interventions Section -->
+            <div id="lifestyle" class="treatment-category">
+                <div class="treatment-category-header">
+                    <i>🏃‍♀️</i>
+                    <h2>Lifestyle Interventions</h2>
+                </div>
+                <div class="treatment-category-content">
+                    <p>Lifestyle modifications form the foundation of diabetes management for all types. These changes can dramatically improve blood glucose control and overall health.</p>
+                    
+                    <div class="treatment-grid">
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>🍎</i>Nutrition Therapy</h3>
+                            <p>Individualized meal plans focused on portion control, carb counting, and choosing foods with a low glycemic index.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>🏃‍♀️</i>Regular Physical Activity</h3>
+                            <p>At least 150 minutes of moderate aerobic activity weekly, plus resistance training 2-3 times per week.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-outline btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                        
+                        <div class="treatment-card">
+                            <h3 class="treatment-card-title"><i>⚖️</i>Weight Management</h3>
+                            <p>Achieving a moderate weight loss of 5-10% can significantly improve glucose control in type 2 diabetes.</p>
+                            <div class="treatment-details">
+                                <div class="effectiveness">
+                                    Effectiveness:
+                                    <div class="effectiveness-rating">
+                                        <div class="effectiveness-fill" style

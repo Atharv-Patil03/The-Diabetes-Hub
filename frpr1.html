@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diabetes Chatbot</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      width: 100%;
+      max-width: 1000px;
+      height: 90vh;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Header */
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #2193b0, #6dd5ed);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-title {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 28px;
+      margin-right: 15px;
+    }
+    
+    .header-subtitle {
+      font-size: 16px;
+      font-weight: 300;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .header-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Chat Box */
+    .chat-box {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background-color: #f9f9f9;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%232193b0' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    /* Messages */
+    .message {
+      max-width: 75%;
+      padding: 15px 20px;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.3s ease-in-out;
+      line-height: 1.5;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #6dd5ed, #2193b0);
+      color: #fff;
+      border-radius: 18px 18px 0 18px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background-color: #fff;
+      color: #333;
+      border-radius: 18px 18px 18px 0;
+      border-left: 4px solid #2193b0;
+    }
+    
+    .message-time {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    /* Quick Replies */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+      align-self: flex-start;
+      max-width: 90%;
+    }
+    
+    .quick-reply {
+      background-color: #e9f5f8;
+      border: 1px solid #2193b0;
+      color: #2193b0;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .quick-reply:hover {
+      background-color: #2193b0;
+      color: #fff;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      align-self: flex-start;
+      background-color: #fff;
+      padding: 12px 20px;
+      border-radius: 18px;
+      font-style: italic;
+      display: none;
+      border-left: 4px solid #2193b0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .typing-indicator span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: #2193b0;
+      border-radius: 50%;
+      margin-right: 3px;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+      margin-right: 0;
+    }
+
+    /* Chat Input */
+    .chat-input {
+      display: flex;
+      padding: 15px 25px;
+      background-color: #fff;
+      border-top: 1px solid #eee;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      outline: none;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .chat-input input:focus {
+      border-color: #2193b0;
+      box-shadow: 0 2px 10px rgba(33, 147, 176, 0.2);
+    }
+
+    .chat-input button {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2193b0, #6dd5ed);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(33, 147, 176, 0.3);
+    }
+
+    .chat-input button:hover {
+      transform: scale(1.05);
+    }
+    
+    .chat-input button:active {
+      transform: scale(0.95);
+    }
+    
+    /* Day separator */
+    .day-separator {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .day-separator span {
+      background-color: #f9f9f9;
+      padding: 0 15px;
+      font-size: 14px;
+      color: #888;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .day-separator:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: #ddd;
+      z-index: 0;
+    }
+    
+    /* Scrollbar */
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .chat-box::-webkit-scrollbar-track {
+      background-color: #f1f1f1;
+    }
+    
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: #2193b0;
+      border-radius: 3px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(0.7);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .chat-container {
+        height: 100vh;
+        width: 100%;
+        border-radius: 0;
+        max-width: none;
+      }
+      
+      .chat-header {
+        border-radius: 0;
+      }
+      
+      .chat-input {
+        border-radius: 0;
+      }
+      
+      .message {
+        max-width: 85%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="header-left">
+        <div class="header-title">Diabetic Chatbot</div>
+        <div class="header-subtitle">Your diabetes management companion</div>
+      </div>
+      <div class="header-right">
+        <button class="header-button" title="Clear Chat" onclick="clearChat()">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+        <button class="header-button" title="Help" onclick="showHelp()">
+          <i class="fas fa-question"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="chat-box" id="chat-box">
+      <div class="day-separator">
+        <span>Today</span>
+      </div>
+      
+      <div class="message bot">
+        Hello! I'm your Diabetes Assistant. How can I help you today? 😊
+      </div>
+      
+      <div class="quick-replies">
+        <div class="quick-reply" onclick="sendQuickReply('What is diabetes?')">What is diabetes?</div>
+        <div class="quick-reply" onclick="sendQuickReply('Diabetes symptoms')">Symptoms</div>
+        <div class="quick-reply" onclick="sendQuickReply('How to manage diabetes?')">Management</div>
+        <div class="quick-reply" onclick="sendQuickReply('Normal blood sugar levels?')">Blood Sugar Levels</div>
+      </div>
+    </div>
+    
+    <div class="typing-indicator" id="typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <div class="chat-input">
+      <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+      <button onclick="sendMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Predefined responses for common diabetes-related questions
+    const responses = {
+      "what is diabetes?": "Diabetes is a chronic condition that affects how your body turns food into energy. There are two main types: Type 1 and Type 2.",
+      "what are symptons of diabetes?": "Common symptoms include frequent urination, excessive thirst, extreme fatigue, blurred vision, and slow-healing wounds.",
+      "how to manage diabetes?": "You can manage diabetes by maintaining a healthy diet, exercising regularly, monitoring blood sugar levels, and taking prescribed medications.",
+      "what foods to avoid?": "Avoid sugary foods, refined carbs, and processed foods. Focus on whole grains, lean proteins, and vegetables.",
+      "normal blood sugar levels?": "Normal fasting blood sugar levels are between 70-100 mg/dL. After meals, it should be less than 140 mg/dL.",
+      "how does diabetes affect the immune system?": "diabetes can weaken the immune system, making it harder to fight off infections and increasing the risk of complications.",
+      "what is type 2 diabetes?": "type 2 diabetes is a chronic condition where the body becomes resistant to insulin or doesn't produce enough insulin, leading to high blood sugar levels.",
+      "how does smoking affect diabetes?": "smoking increases the risk of diabetes complications, such as heart disease, stroke, and poor circulation, and can worsen blood sugar control.",
+      "can diabetes cause eye problems?": "yes, diabetes can cause eye problems like diabetic retinopathy, cataracts, and glaucoma, which may lead to vision loss if untreated.",
+      "can diabetes affect pregnancy?": "yes, diabetes during pregnancy (gestational diabetes) can increase risks for both mother and baby, including high birth weight and preterm birth.",
+      "how is diabetes treated?": "diabetes is treated with lifestyle changes (diet, exercise), medications, and insulin therapy, depending on the type and severity.",
+      "what is diabetic ketoacidosis?": "diabetic ketoacidosis (dka) is a serious complication where high blood sugar and ketones cause the blood to become acidic, requiring emergency treatment.",
+      "how important is regular medical check-up for diabetes management?": "regular check-ups are crucial for monitoring blood sugar, screening for complications, and adjusting treatment plans.",
+      "can diabetes be prevented?": "type 2 diabetes can often be prevented or delayed with a healthy lifestyle, including diet, exercise, and weight management.",
+      "how do blood sugar levels affect health?": "uncontrolled blood sugar levels can lead to complications like nerve damage, kidney disease, heart disease, and vision problems.",
+      "what are the early signs of diabetes?": "early signs include increased thirst, frequent urination, unexplained weight loss, fatigue, and blurred vision.",
+      "what lifestyle changes can help manage diabetes?": "healthy eating, regular exercise, weight management, and quitting smoking can significantly help manage diabetes.",
+      "what are the risk factors for type 2 diabetes?": "risk factors include obesity, physical inactivity, family history, age, and prediabetes.",
+      "what are the long-term effects of diabetes?": "long-term effects include heart disease, kidney damage, nerve damage, vision loss, and foot problems.",
+      "what is hyperglycemia?": "hyperglycemia is high blood sugar, which can cause symptoms like thirst, frequent urination, and fatigue, and may lead to complications.",
+      "what is the impact of diabetes on daily life?": "diabetes requires daily management, including monitoring blood sugar, taking medications, and maintaining a healthy lifestyle.",
+      "what role does exercise play in managing diabetes?": "exercise helps control blood sugar, improve insulin sensitivity, and maintain a healthy weight.",
+      "can diabetes be cured?": "there is no cure for diabetes, but it can be managed effectively with treatment and lifestyle changes.",
+      "how often should people with diabetes check their blood sugar?": "frequency varies; some may need multiple daily checks, while others may check less often, as advised by their doctor.",
+      "what is insulin resistance?": "insulin resistance occurs when cells don't respond well to insulin, leading to higher blood sugar levels and often precedes type 2 diabetes.",
+      "what is the difference between type 1 and type 2 diabetes?": "type 1 is an autoimmune condition where the body attacks insulin-producing cells; type 2 involves insulin resistance or insufficient insulin production.",
+      "what is type 1 diabetes?": "type 1 diabetes is an autoimmune disease where the pancreas produces little or no insulin, requiring lifelong insulin therapy.",
+      "what is continuous glucose monitoring?": "continuous glucose monitoring (cgm) uses a sensor to track blood sugar levels in real-time, helping with diabetes management.",
+      "how does diet affect diabetes?": "a balanced diet helps control blood sugar, manage weight, and reduce the risk of complications.",
+     "what is a diabetic diet?": "a diabetic diet focuses on nutrient-dense foods, portion control, and monitoring carbohydrate intake to manage blood sugar.",
+    "is diabetes hereditary?": "genetics play a role, especially in type 2 diabetes, but lifestyle factors are also significant contributors.",
+    "what are the main types of diabetes?": "the main types are type 1, type 2, and gestational diabetes (occurring during pregnancy).",
+    "can diabetes lead to cardiovascular disease?": "yes, diabetes increases the risk of cardiovascular diseases like heart attack and stroke due to high blood sugar damaging blood vessels.",
+    "what is gestational diabetes?": "gestational diabetes occurs during pregnancy and usually resolves after birth but increases the risk of type 2 diabetes later.",
+    "what is diabetic neuropathy?": "diabetic neuropathy is nerve damage caused by high blood sugar, leading to pain, numbness, or weakness, often in the hands and feet.",
+    "what are diabetic foot problems?": "diabetes can cause foot problems like infections, ulcers, and poor circulation, sometimes leading to amputation if untreated.",
+    "can children get diabetes?": "yes, children can develop type 1 diabetes (more common) or type 2 diabetes, especially with obesity or family history.",
+    "what medications are used to treat diabetes?": "medications include insulin, metformin, sulfonylureas, and others, depending on the type and needs of the patient.",
+    "how does stress affect diabetes?": "stress can raise blood sugar levels and make diabetes harder to manage, so stress reduction techniques are important.",
+    "can alcohol consumption affect diabetes?": "alcohol can affect blood sugar levels and interact with diabetes medications, so moderation and monitoring are key.",
+    "what is an hba1c test?": "the hba1c test measures average blood sugar levels over the past 2-3 months, helping monitor long-term diabetes control.",
+    "what is a diabetes care plan?": "a diabetes care plan includes blood sugar monitoring, healthy eating, physical activity, medication, and regular medical check-ups.",
+    "can diabetes affect mental health?": "yes, diabetes can increase the risk of depression and anxiety due to the stress of managing the condition.",
+    "what are the common myths about diabetes?": "common myths include that eating sugar causes diabetes, or that people with diabetes can't eat any sugar.",
+    "how can technology help in managing diabetes?": "technology like cgms and insulin pumps can improve blood sugar monitoring and insulin delivery for better management.",
+    "how does diabetes affect the kidneys?": "diabetes can damage the kidneys (diabetic nephropathy), potentially leading to kidney failure if untreated.",
+    "how can weight loss impact diabetes?": "weight loss can improve blood sugar control, reduce insulin resistance, and lower the risk of complications in type 2 diabetes.",
+    "how is diabetes diagnosed?": "diabetes is diagnosed through blood tests like fasting glucose, oral glucose tolerance, or hba1c tests.",
+    "what causes diabetes?": "type 1 is caused by an autoimmune reaction; type 2 is linked to genetics and lifestyle factors like obesity and inactivity.",
+    "what are the symptoms of diabetes?": "symptoms include increased thirst, frequent urination, fatigue, blurred vision, slow-healing sores, and unexplained weight loss.",
+    "can pets get diabetes?": "yes, pets like dogs and cats can develop diabetes, requiring insulin therapy and dietary management similar to humans.",
+    "what is a normal blood sugar level?": "A normal blood sugar level is 80–130 mg/dL before meals and less than 180 mg/dL two hours after meals.",
+    "how often should I check my blood sugar?": "It depends on your treatment. If you're on insulin, check 2–4 times a day. If not, once a day or a few times a week may be enough.",
+    "what should I do if my sugar is too high?": "Drink water, move around, avoid carbs, and if it's over 300 mg/dL, contact your doctor.",
+    "what should I do if my sugar is too low?": "Eat or drink something sugary, like juice or glucose tablets. Wait 15 minutes and check again.",
+    "can you help me track my sugar levels?": "Yes! Share your readings and I can help you monitor trends and averages.",
+    "how do I use a glucometer?": "Wash hands, insert a strip, prick your finger, place a drop of blood on the strip, and wait for the result.",
+    "what time of day should I test my blood sugar?": "Common times are before meals, 2 hours after meals, and before bed.",
+    "what is fasting blood sugar?": "It's your blood sugar level after not eating for 8 hours, usually checked in the morning.",
+    "what is postprandial blood sugar?": "It's the blood sugar level 1 to 2 hours after eating, to see how your body handles food.",
+    "how do I interpret my blood sugar readings?": "80–130 mg/dL before meals is good; less than 180 mg/dL after meals is also good; below 70 is too low; above 180 is high.",
+    "what medicines are used for type 2 diabetes?": "Common ones include metformin, sulfonylureas, DPP-4 inhibitors, GLP-1 receptor agonists, and SGLT2 inhibitors.",
+    "do I have to take insulin if I have diabetes?": "Type 1 always needs insulin. Type 2 may not unless tablets aren't working well.",
+    "what is metformin?": "A common medicine for type 2 diabetes. It helps your body use insulin better and reduces sugar from your liver.",
+    "what are insulin pens?": "They're easy-to-use devices for injecting insulin, more convenient than syringes.",
+    "how do I inject insulin?": "Clean the skin, pinch an area like the belly, insert the needle, and push the insulin in.",
+    "when should I take my insulin?": "It depends on the type of insulin. Some are taken before meals, others once a day.",
+    "can I stop my medication if I feel fine?": "No. You should always follow your doctor's instructions.",
+    "what are the side effects of diabetes medication?": "They vary. Some cause stomach issues, low sugar, or weight changes.",
+    "what happens if I miss a dose of my diabetes medicine?": "Take it when you remember. If it's close to your next dose, skip it. Don't take two doses together.",
+    "can diabetes medication cure my condition?": "No. It helps manage the condition, but not cure it.",
+    "what foods should I eat with diabetes?": "Vegetables, whole grains, lean proteins, healthy fats, and small portions of fruit.",
+    "what foods should I avoid?": "Sugary drinks, sweets, fried food, and refined carbs like white bread.",
+    "how many meals should I eat per day?": "Three balanced meals and 1–2 healthy snacks. Don't skip meals.",
+    "can I eat fruits if I have diabetes?": "Yes, in small portions. Pick low-sugar fruits like apples, berries, or oranges.",
+    "is sugar completely off-limits?": "No, but you should limit it. Occasional treats are okay if your sugar is under control.",
+    "can I drink alcohol?": "Yes, in moderation. Always eat with alcohol and check your sugar levels.",
+    "what is the best diet plan for diabetes?": "A balanced diet with carbs, proteins, and healthy fats. A dietitian can help customize it.",
+    "what is carb counting?": "A method to track how many carbs you eat, since they affect blood sugar the most.",
+    "do I need to eat sugar-free products?": "Not always. Some sugar-free products still have carbs and calories. Read labels.",
+    "what are some healthy snacks for diabetics?": "Nuts, Greek yogurt, veggie sticks, boiled eggs, or a small fruit.",
+    "can i eat rice if i have diabetes?": "Yes, but choose brown rice or smaller portions of white rice. Pair it with vegetables or protein.", 
+    "how much water should a diabetic drink daily?": "Aim for about 8 glasses (2 liters) a day unless your doctor says otherwise.", 
+    "can i have cheat meals with diabetes?": "Occasionally, yes. But try to make healthier versions and keep portions small.", 
+    "should i follow a keto diet for diabetes?": "It may help some people, but it's not for everyone. Talk to your doctor or dietitian first.", 
+    "is intermittent fasting safe for diabetics?": "It depends on your medication and health. Check with your doctor before starting.", 
+    "can i drink tea or coffee?": "Yes, without added sugar. Black coffee or unsweetened tea is best.", 
+    "how do carbs affect blood sugar?": "Carbs break down into sugar in your body, raising your blood glucose levels.", 
+    "can i be a vegetarian with diabetes?": "Yes. Just include enough protein, fiber, and healthy fats in your meals.", 
+    "what is the glycemic index?": "It ranks how quickly foods raise blood sugar. Low-GI foods are better for diabetes.", 
+    "are artificial sweeteners safe?": "In moderation, yes. Most are approved and considered safe for people with diabetes.",
+    "how does exercise help with diabetes?": "It lowers blood sugar, improves insulin use, and helps manage weight.",
+    "how much should i exercise each week?": "Aim for at least 150 minutes of moderate activity, like walking, per week.",
+    "what are the best exercises for diabetes?": "Walking, swimming, biking, yoga, and strength training are great choices.",
+    "can i exercise with high blood sugar?": "If it's very high (over 300 mg/dL), avoid intense activity and check for ketones first.",
+    "can i exercise with low blood sugar?": "No. Eat something first and wait for your sugar to go up.",
+    "should i check sugar before and after exercise?": "Yes, especially if you take insulin or get low sugar easily.",
+    "can strength training help with diabetes?": "Yes! It helps with insulin sensitivity and builds muscle.",
+    "what should i eat before exercising?": "A small snack with carbs, like a banana or toast, can help prevent lows.",
+    "can i walk after meals to control sugar?": "Yes! A short 10–15 minute walk can help lower post-meal blood sugar.",
+    "what precautions should i take while exercising?": "Stay hydrated, wear good shoes, and carry a quick sugar snack in case of lows.",
+    "what are the symptoms of type 1 diabetes?": "Increased thirst, frequent urination, weight loss, tiredness, and blurry vision.", 
+    "what are the symptoms of type 2 diabetes?": "Many people have no symptoms. Others may feel thirsty, tired, or have frequent urination.", 
+    "what's the difference between type 1 and type 2 diabetes?": "Type 1 is when the body makes no insulin. Type 2 is when insulin doesn't work properly or isn't enough.", 
+    "can diabetes be reversed?": "Type 2 diabetes may go into remission with weight loss, exercise, and diet. Type 1 cannot be reversed.", 
+    "how is diabetes diagnosed?": "Through blood tests like fasting glucose, HbA1c, or an oral glucose tolerance test.", 
+    "what is prediabetes?": "A condition where your blood sugar is higher than normal but not high enough to be diabetes.", 
+    "how often should i get tested for diabetes?": "If you're over 45 or at risk, get tested every 1–3 years.", 
+    "what is gestational diabetes?": "Diabetes that develops during pregnancy and usually goes away after birth.", 
+    "can kids get diabetes?": "Yes. Type 1 is more common in kids, but type 2 is rising too.", 
+    "is diabetes genetic?": "Yes, it can run in families, especially type 2 diabetes.",
+
+"what are the main types of diabetes?": "the main types are type 1, type 2, and gestational diabetes (occurring during pregnancy).",
+  "can diabetes lead to cardiovascular disease?": "yes, diabetes increases the risk of cardiovascular diseases like heart attack and stroke due to high blood sugar damaging blood vessels.",
+  "what is gestational diabetes?": "gestational diabetes occurs during pregnancy and usually resolves after birth but increases the risk of type 2 diabetes later.",
+  "what is diabetic neuropathy?": "diabetic neuropathy is nerve damage caused by high blood sugar, leading to pain, numbness, or weakness, often in the hands and feet.",
+  "what are diabetic foot problems?": "diabetes can cause foot problems like infections, ulcers, and poor circulation, sometimes leading to amputation if untreated.",
+  "can children get diabetes?": "yes, children can develop type 1 diabetes (more common) or type 2 diabetes, especially with obesity or family history.",
+  "what medications are used to treat diabetes?": "medications include insulin, metformin, sulfonylureas, and others, depending on the type and needs of the patient.",
+  "how does stress affect diabetes?": "stress can raise blood sugar levels and make diabetes harder to manage, so stress reduction techniques are important.",
+  "can alcohol consumption affect diabetes?": "alcohol can affect blood sugar levels and interact with diabetes medications, so moderation and monitoring are key.",
+  "what is an hba1c test?": "the hba1c test measures average blood sugar levels over the past 2-3 months, helping monitor long-term diabetes control.",
+  "what is a diabetes care plan?": "a diabetes care plan includes blood sugar monitoring, healthy eating, physical activity, medication, and regular medical check-ups.",
+  "can diabetes affect mental health?": "yes, diabetes can increase the risk of depression and anxiety due to the stress of managing the condition.",
+  "what are the common myths about diabetes?": "common myths include that eating sugar causes diabetes, or that people with diabetes can't eat any sugar.",
+  "how can technology help in managing diabetes?": "technology like cgms and insulin pumps can improve blood sugar monitoring and insulin delivery for better management.",
+  "how does diabetes affect the kidneys?": "diabetes can damage the kidneys (diabetic nephropathy), potentially leading to kidney failure if untreated.",
+  "how can weight loss impact diabetes?": "weight loss can improve blood sugar control, reduce insulin resistance, and lower the risk of complications in type 2 diabetes.",
+  "how is diabetes diagnosed?": "diabetes is diagnosed through blood tests like fasting glucose, oral glucose tolerance, or hba1c tests.",
+  "what causes diabetes?": "type 1 is caused by an autoimmune reaction; type 2 is linked to genetics and lifestyle factors like obesity and inactivity.",
+  "what are the symptoms of diabetes?": "symptoms include increased thirst, frequent urination, fatigue, blurred vision, slow-healing sores, and unexplained weight loss.",
+  "can pets get diabetes?": "yes, pets like dogs and cats can develop diabetes, requiring insulin therapy and dietary management similar to humans.",
+"what is a normal blood sugar level?": "A normal blood sugar level is 80–130 mg/dL before meals and less than 180 mg/dL two hours after meals.",
+"how often should I check my blood sugar?": "It depends on your treatment. If you're on insulin, check 2–4 times a day. If not, once a day or a few times a week may be enough.",
+"what should I do if my sugar is too high?": "Drink water, move around, avoid carbs, and if it's over 300 mg/dL, contact your doctor.",
+"what should I do if my sugar is too low?": "Eat or drink something sugary, like juice or glucose tablets. Wait 15 minutes and check again.",
+"can you help me track my sugar levels?": "Yes! Share your readings and I can help you monitor trends and averages.",
+"how do I use a glucometer?": "Wash hands, insert a strip, prick your finger, place a drop of blood on the strip, and wait for the result.",
+"what time of day should I test my blood sugar?": "Common times are before meals, 2 hours after meals, and before bed.",
+"what is fasting blood sugar?": "It's your blood sugar level after not eating for 8 hours, usually checked in the morning.",
+"what is postprandial blood sugar?": "It's the blood sugar level 1 to 2 hours after eating, to see how your body handles food.",
+"how do I interpret my blood sugar readings?": "80–130 mg/dL before meals is good; less than 180 mg/dL after meals is also good; below 70 is too low; above 180 is high.",
+
+"what medicines are used for type 2 diabetes?": "Common ones include metformin, sulfonylureas, DPP-4 inhibitors, GLP-1 receptor agonists, and SGLT2 inhibitors.",
+"do I have to take insulin if I have diabetes?": "Type 1 always needs insulin. Type 2 may not unless tablets aren’t working well.",
+"what is metformin?": "A common medicine for type 2 diabetes. It helps your body use insulin better and reduces sugar from your liver.",
+"what are insulin pens?": "They’re easy-to-use devices for injecting insulin, more convenient than syringes.",
+"how do I inject insulin?": "Clean the skin, pinch an area like the belly, insert the needle, and push the insulin in.",
+"when should I take my insulin?": "It depends on the type of insulin. Some are taken before meals, others once a day.",
+"can I stop my medication if I feel fine?": "No. You should always follow your doctor’s instructions.",
+"what are the side effects of diabetes medication?": "They vary. Some cause stomach issues, low sugar, or weight changes.",
+"what happens if I miss a dose of my diabetes medicine?": "Take it when you remember. If it’s close to your next dose, skip it. Don’t take two doses together.",
+"can diabetes medication cure my condition?": "No. It helps manage the condition, but not cure it.",
+
+"what foods should I eat with diabetes?": "Vegetables, whole grains, lean proteins, healthy fats, and small portions of fruit.",
+"what foods should I avoid?": "Sugary drinks, sweets, fried food, and refined carbs like white bread.",
+"how many meals should I eat per day?": "Three balanced meals and 1–2 healthy snacks. Don’t skip meals.",
+"can I eat fruits if I have diabetes?": "Yes, in small portions. Pick low-sugar fruits like apples, berries, or oranges.",
+"is sugar completely off-limits?": "No, but you should limit it. Occasional treats are okay if your sugar is under control.",
+"can I drink alcohol?": "Yes, in moderation. Always eat with alcohol and check your sugar levels.",
+"what is the best diet plan for diabetes?": "A balanced diet with carbs, proteins, and healthy fats. A dietitian can help customize it.",
+"what is carb counting?": "A method to track how many carbs you eat, since they affect blood sugar the most.",
+"do I need to eat sugar-free products?": "Not always. Some sugar-free products still have carbs and calories. Read labels.",
+"what are some healthy snacks for diabetics?": "Nuts, Greek yogurt, veggie sticks, boiled eggs, or a small fruit.",
+
+"can i eat rice if i have diabetes?": "Yes, but choose brown rice or smaller portions of white rice. Pair it with vegetables or protein.",
+ "how much water should a diabetic drink daily?": "Aim for about 8 glasses (2 liters) a day unless your doctor says otherwise.", 
+ "can i have cheat meals with diabetes?": "Occasionally, yes. But try to make healthier versions and keep portions small.", 
+ "should i follow a keto diet for diabetes?": "It may help some people, but it’s not for everyone. Talk to your doctor or dietitian first.",
+ "is intermittent fasting safe for diabetics?": "It depends on your medication and health. Check with your doctor before starting.", 
+ "can i drink tea or coffee?": "Yes, without added sugar. Black coffee or unsweetened tea is best.", 
+ "how do carbs affect blood sugar?": "Carbs break down into sugar in your body, raising your blood glucose levels.", 
+ "can i be a vegetarian with diabetes?": "Yes. Just include enough protein, fiber, and healthy fats in your meals.",
+  "what is the glycemic index?": "It ranks how quickly foods raise blood sugar. Low-GI foods are better for diabetes.",
+ "are artificial sweeteners safe?": "In moderation, yes. Most are approved and considered safe for people with diabetes.",
+
+"how does exercise help with diabetes?": "It lowers blood sugar, improves insulin use, and helps manage weight.",
+"how much should i exercise each week?": "Aim for at least 150 minutes of moderate activity, like walking, per week.",
+"what are the best exercises for diabetes?": "Walking, swimming, biking, yoga, and strength training are great choices.",
+"can i exercise with high blood sugar?": "If it’s very high (over 300 mg/dL), avoid intense activity and check for ketones first.",
+"can i exercise with low blood sugar?": "No. Eat something first and wait for your sugar to go up.",
+"should i check sugar before and after exercise?": "Yes, especially if you take insulin or get low sugar easily.",
+"can strength training help with diabetes?": "Yes! It helps with insulin sensitivity and builds muscle.",
+"what should i eat before exercising?": "A small snack with carbs, like a banana or toast, can help prevent lows.",
+"can i walk after meals to control sugar?": "Yes! A short 10–15 minute walk can help lower post-meal blood sugar.",
+"what precautions should i take while exercising?": "Stay hydrated, wear good shoes, and carry a quick sugar snack in case of lows.",
+
+  "what foods to avoid?": "avoid sugary foods, refined carbs, and processed foods. focus on whole grains, lean proteins, and vegetables.",
+  "what is type 1 diabetes?": "type 1 diabetes is an autoimmune condition where the body attacks insulin-producing cells in the pancreas.",
+  "what is type 2 diabetes?": "type 2 diabetes is a chronic condition where the body becomes resistant to insulin or doesn’t produce enough.",
+  "can diabetes be cured?": "diabetes cannot be cured but can be managed with lifestyle changes and medication.",
+  "what are the symptoms of diabetes?": "common symptoms include frequent urination, excessive thirst, fatigue, and blurred vision.",
+  "can type 2 diabetes be reversed?": "some people can reverse type 2 diabetes with weight loss, healthy eating, and regular exercise.",
+  "how is diabetes diagnosed?": "diabetes is diagnosed using blood tests such as fasting glucose, a1c, or oral glucose tolerance test.",
+  "what is a normal blood sugar level?": "a normal fasting blood sugar level is between 70 and 99 mg/dl.",
+  "what is a dangerous blood sugar level?": "blood sugar below 70 mg/dl or above 180 mg/dl can be dangerous and should be addressed promptly.",
+  "how often should i check my blood sugar?": "it depends on the type of diabetes and treatment plan. consult your doctor for personalized advice.",
+  "what is insulin?": "insulin is a hormone that helps regulate blood sugar by allowing glucose to enter cells for energy.",
+  "do all diabetics need insulin?": "people with type 1 diabetes always need insulin. some with type 2 may need it if other treatments aren’t enough.",
+  "can i eat fruit with diabetes?": "yes, but choose whole fruits in moderation and avoid fruit juices or dried fruits with added sugar.",
+  "is exercise good for diabetes?": "yes, regular exercise helps lower blood sugar and improves insulin sensitivity.",
+  "can stress affect blood sugar levels?": "yes, stress can cause blood sugar levels to rise due to hormone changes in the body.",
+  "what is a1c?": "a1c is a blood test that shows your average blood sugar level over the past 2-3 months.",
+  "how often should i get my a1c checked?": "most people with diabetes should check their a1c every 3 to 6 months.",
+  "what are diabetic complications?": "complications include heart disease, kidney damage, nerve damage, and eye problems.",
+  "can diabetes cause vision loss?": "yes, diabetes can lead to diabetic retinopathy, which can cause vision loss if untreated.",
+  "what is hypoglycemia?": "hypoglycemia is a condition where blood sugar drops too low, usually below 70 mg/dl.",
+  "what is hyperglycemia?": "hyperglycemia is when blood sugar is too high, often over 180 mg/dl after meals.",
+  "what should i do if my blood sugar is too low?": "eat or drink something with 15 grams of fast-acting sugar, like juice or glucose tablets.",
+  "can i drink alcohol with diabetes?": "yes, in moderation and with food, but monitor blood sugar as alcohol can affect levels.",
+  "how does diabetes affect the kidneys?": "high blood sugar can damage the kidneys over time, leading to diabetic nephropathy.",
+  "is type 1 diabetes genetic?": "genetics play a role, but environmental factors also contribute to developing type 1 diabetes.",
+  "is type 2 diabetes genetic?": "yes, it tends to run in families, but lifestyle choices are also major factors.",
+  "can children get type 2 diabetes?": "yes, though more common in adults, increasing cases are seen in overweight children and teens.",
+  "what is gestational diabetes?": "gestational diabetes occurs during pregnancy and usually goes away after childbirth.",
+  "does diabetes affect pregnancy?": "yes, it can lead to complications if not managed. close monitoring is important.",
+  "can i prevent type 2 diabetes?": "yes, maintaining a healthy weight, eating well, and exercising can reduce your risk.",
+
+  
+  "what is difference between type 1 and type 2 diabetes?": "type 1 is an autoimmune disease where the body destroys insulin-producing cells, while type 2 is caused by insulin resistance or insufficient insulin production.",
+  "at what age does type 1 diabetes usually appear?": "type 1 diabetes often develops in children, teens, or young adults.",
+  "at what age does type 2 diabetes usually appear?": "type 2 diabetes usually develops in adults over 45, but is increasingly seen in younger people.",
+  "does type 1 diabetes have a known cause?": "type 1 is caused by an autoimmune reaction, and its exact cause is unknown.",
+  "is type 2 diabetes preventable?": "yes, type 2 can often be prevented or delayed with lifestyle changes.",
+  "do both type 1 and type 2 diabetes need insulin?": "type 1 always needs insulin, while type 2 may be managed with diet, exercise, pills, or insulin.",
+  "which diabetes is more common?": "type 2 diabetes is more common, accounting for about 90-95% of all diabetes cases.",
+  "can lifestyle changes reverse type 1 diabetes?": "no, type 1 cannot be reversed and requires lifelong insulin therapy.",
+  "can lifestyle changes reverse type 2 diabetes?": "yes, with weight loss, exercise, and healthy eating, some people can reverse type 2 diabetes.",
+  "which type of diabetes is considered an autoimmune disease?": "type 1 diabetes is an autoimmune disease, while type 2 is not.",
+
+  
+  "what is glucose?": "glucose is a type of sugar that your body uses for energy. it comes from the food you eat.",
+  "why is glucose important for the body?": "glucose is the main source of energy for the brain, muscles, and cells in the body.",
+  "how does the body use glucose?": "glucose enters the bloodstream and is used by cells for energy with the help of insulin.",
+  "what is normal blood glucose level?": "a normal fasting blood glucose level is between 70 and 99 mg/dl.",
+  "what is high blood glucose?": "high blood glucose, or hyperglycemia, occurs when there is too much sugar in the blood.",
+  "what is low blood glucose?": "low blood glucose, or hypoglycemia, happens when your blood sugar drops below 70 mg/dl.",
+  "how does insulin affect glucose?": "insulin helps move glucose from the blood into the cells for energy.",
+  "what causes blood glucose to rise?": "eating sugary foods, stress, illness, or not taking diabetes medication can raise blood glucose.",
+  "what causes blood glucose to drop?": "too much insulin, skipping meals, or intense exercise can lower blood glucose.",
+  "how is glucose measured?": "glucose is measured using a blood glucose meter or continuous glucose monitor (cgm).",
+  "how often should glucose be checked?": "it depends on the type of diabetes and treatment plan. check as advised by your doctor.",
+  "what is a glucose spike?": "a glucose spike is a sudden rise in blood sugar after eating high-carb or sugary foods.",
+  "can drinking water lower blood glucose?": "yes, staying hydrated helps the kidneys flush out excess sugar from the blood.",
+  "does exercise affect glucose levels?": "yes, exercise usually lowers glucose levels by helping muscles use sugar for energy.",
+  "what is glucose tolerance test?": "a glucose tolerance test checks how your body processes sugar and helps diagnose diabetes or prediabetes.",
+  "what is fasting blood glucose?": "fasting blood glucose is the level of sugar in your blood after not eating for at least 8 hours.",
+  "what is postprandial glucose?": "postprandial glucose is the blood sugar level measured 1-2 hours after eating.",
+  "how does stress affect glucose levels?": "stress hormones like cortisol can raise blood sugar by making the body less sensitive to insulin.",
+  "what is a continuous glucose monitor (cgm)?": "a cgm is a device that tracks glucose levels throughout the day and night automatically.",
+  "what is random blood glucose test?": "a random glucose test measures blood sugar at any time, regardless of when you last ate.",
+  "can certain foods stabilize blood glucose?": "yes, foods high in fiber and protein can help keep glucose levels stable.",
+  "does sleep affect blood glucose?": "yes, poor sleep can cause insulin resistance and raise blood sugar levels.",
+  "how do carbs affect glucose?": "carbohydrates are broken down into glucose, which raises blood sugar after eating.",
+  "what is glycemic index?": "glycemic index is a measure of how quickly a food raises your blood sugar levels.",
+  "can low glucose be dangerous?": "yes, severe hypoglycemia can cause confusion, seizures, or even loss of consciousness.",
+  "what are symptoms of low glucose?": "symptoms include shakiness, sweating, dizziness, confusion, and hunger.",
+  "what are symptoms of high glucose?": "symptoms include frequent urination, thirst, fatigue, and blurry vision.",
+  "how do fiber-rich foods affect glucose?": "fiber slows digestion and sugar absorption, helping keep blood sugar levels steady.",
+  "does caffeine affect glucose levels?": "in some people, caffeine can raise blood sugar or affect insulin sensitivity.",
+  "can blood glucose fluctuate during the day?": "yes, blood sugar naturally rises and falls depending on meals, activity, and hormones.",
+
+"what are symptoms of type 1 diabetes?": "Increased thirst, frequent urination, weight loss, tiredness, and blurry vision.",
+ "what are symptoms of type 2 diabetes?": "Many people have no symptoms. Others may feel thirsty, tired, or have frequent urination.",
+ "what is difference between type 1 and type 2 diabetes?": "Type 1 is when the body makes no insulin. Type 2 is when insulin doesn't work properly or isn’t enough.",
+ "can diabetes be reversed?": "Type 2 diabetes may go into remission with weight loss, exercise, and diet. Type 1 cannot be reversed.", "how is diabetes diagnosed?": "Through blood tests like fasting glucose, HbA1c, or an oral glucose tolerance test.",
+ "what is prediabetes?": "A condition where your blood sugar is higher than normal but not high enough to be diabetes.", 
+ "how often should i get tested for diabetes?": "If you're over 45 or at risk, get tested every 1–3 years.",
+ "what is gestational diabetes?": "Diabetes that develops during pregnancy and usually goes away after birth.", 
+ "can kids get diabetes?": "Yes. Type 1 is more common in kids, but type 2 is rising too.",
+ "is diabetes genetic?": "Yes, it can run in families, especially type 2 diabetes." ,
+
+ 
+  "how is type 1 diabetes treated?": "type 1 diabetes is treated with daily insulin injections or an insulin pump, along with blood sugar monitoring.",
+  "how is type 2 diabetes treated?": "type 2 diabetes is treated with lifestyle changes, oral medications, and sometimes insulin.",
+  "what medications are used for type 2 diabetes?": "common medications include metformin, sulfonylureas, dpp-4 inhibitors, glp-1 receptor agonists, and sglt2 inhibitors.",
+  "what is insulin therapy?": "insulin therapy involves injecting insulin to help manage blood sugar in people who cannot produce enough on their own.",
+  "do all type 2 diabetics need insulin?": "not all, but some people with type 2 may eventually need insulin if other treatments are not enough.",
+  "can lifestyle changes help in diabetes treatment?": "yes, diet, exercise, weight loss, and quitting smoking are key parts of diabetes management.",
+  "what is the role of diet in diabetes treatment?": "a healthy diet helps control blood sugar, maintain a healthy weight, and reduce complications.",
+  "how does exercise help treat diabetes?": "exercise improves insulin sensitivity and helps lower blood sugar levels.",
+  "what is the best diet for diabetes?": "a balanced diet with whole grains, lean proteins, healthy fats, vegetables, and limited sugars is best.",
+  "what is carb counting?": "carb counting is a method of tracking carbohydrates to manage blood sugar levels more precisely, especially in type 1 diabetes.",
+  "can weight loss reverse type 2 diabetes?": "yes, in many cases, weight loss can significantly improve or even reverse type 2 diabetes.",
+  "what is metformin?": "metformin is a first-line oral medication for type 2 diabetes that lowers glucose production in the liver.",
+  "are there natural treatments for diabetes?": "while lifestyle changes help, no natural remedy can replace medical treatment for diabetes.",
+  "can type 1 diabetes be managed without insulin?": "no, people with type 1 diabetes must take insulin to survive.",
+  "what is an insulin pump?": "an insulin pump is a device that delivers a steady flow of insulin throughout the day.",
+  "what is cgm in diabetes treatment?": "a continuous glucose monitor (cgm) tracks blood sugar levels in real-time to help manage treatment.",
+  "can bariatric surgery treat type 2 diabetes?": "yes, in some cases, weight loss surgery can improve or even put type 2 diabetes in remission.",
+  "how often should diabetes treatment plans be reviewed?": "treatment plans should be reviewed regularly, typically every 3 to 6 months or as needed.",
+  "what are side effects of diabetes medications?": "side effects vary but may include nausea, low blood sugar, weight gain, or digestive issues.",
+  "what is basal-bolus insulin therapy?": "basal-bolus therapy uses long-acting insulin for baseline needs and short-acting insulin at meals.",
+  "what is the dawn phenomenon?": "the dawn phenomenon is a natural early morning rise in blood sugar due to hormone changes.",
+  "what is sliding scale insulin?": "sliding scale insulin is a method of adjusting insulin doses based on current blood sugar readings.",
+  "how is hypoglycemia treated in diabetics?": "eat or drink 15 grams of fast-acting carbs like juice or glucose tablets, then recheck blood sugar.",
+  "how is hyperglycemia treated?": "treatment may include insulin, exercise, hydration, and medication adjustments.",
+  "can diabetes medications be stopped if blood sugar improves?": "only with a doctor’s guidance. never stop medications without medical advice.",
+  "can stress management help treat diabetes?": "yes, reducing stress can help lower blood sugar and improve overall diabetes control.",
+  "what is diabetes self-management education?": "it teaches skills like blood sugar monitoring, healthy eating, and medication use to manage diabetes.",
+  "is there a cure for type 1 diabetes?": "no, type 1 diabetes has no cure, but it can be managed effectively with proper treatment.",
+  "is there a cure for type 2 diabetes?": "type 2 diabetes cannot be cured, but it can go into remission with significant lifestyle changes.",
+
+  
+  "what causes type 1 diabetes?": "type 1 diabetes is caused by an autoimmune reaction that destroys insulin-producing cells in the pancreas.",
+  "what causes type 2 diabetes?": "type 2 diabetes is usually caused by insulin resistance and the body’s inability to use insulin properly.",
+  "is type 1 diabetes hereditary?": "genetics can play a role, but not everyone with a family history of type 1 will get it.",
+  "is type 2 diabetes hereditary?": "yes, family history increases the risk of developing type 2 diabetes.",
+  "can being overweight cause type 2 diabetes?": "yes, excess body fat, especially around the abdomen, increases insulin resistance.",
+  "can a virus cause type 1 diabetes?": "some viruses are believed to trigger type 1 diabetes in genetically predisposed individuals.",
+  "who is at risk for type 1 diabetes?": "children, teens, and people with a family history of type 1 are at higher risk.",
+  "who is at risk for type 2 diabetes?": "people over 45, those with obesity, sedentary lifestyles, or a family history are at risk.",
+  "can lifestyle choices increase the risk of type 2 diabetes?": "yes, poor diet, physical inactivity, and smoking increase the risk.",
+  "does stress cause diabetes?": "chronic stress can raise blood sugar and contribute to the development of type 2 diabetes.",
+  "can pregnancy increase the risk of diabetes?": "yes, women with gestational diabetes have a higher risk of developing type 2 diabetes later.",
+  "can high blood pressure be a risk factor for diabetes?": "yes, high blood pressure is often linked with insulin resistance and type 2 diabetes.",
+  "can high cholesterol lead to diabetes?": "high levels of bad cholesterol can increase the risk of type 2 diabetes.",
+  "can ethnicity affect diabetes risk?": "yes, certain ethnic groups like south asians, african americans, and hispanics have a higher risk.",
+  "can lack of sleep cause diabetes?": "yes, poor sleep patterns can increase insulin resistance and raise the risk of type 2 diabetes.",
+
+  
+  "how is type 1 diabetes diagnosed?": "type 1 is diagnosed through blood tests like fasting glucose, a1c, and antibody testing.",
+  "how is type 2 diabetes diagnosed?": "type 2 is diagnosed using fasting glucose, a1c, or an oral glucose tolerance test.",
+  "what is the a1c test?": "the a1c test shows your average blood sugar over the past 2 to 3 months.",
+  "what is a fasting blood sugar test?": "a fasting blood sugar test measures glucose after you haven’t eaten for at least 8 hours.",
+  "what is a random blood sugar test?": "a random glucose test checks your blood sugar at any time, regardless of meals.",
+  "what is an oral glucose tolerance test?": "this test checks your blood sugar before and after drinking a sugary liquid to see how your body handles glucose.",
+  "what blood sugar level means diabetes?": "a fasting glucose of 126 mg/dl or higher, or an a1c of 6.5% or more, indicates diabetes.",
+  "what blood sugar range is considered prediabetes?": "a fasting blood sugar of 100–125 mg/dl or a1c of 5.7–6.4% is considered prediabetes.",
+  "what are diabetes antibodies tests?": "antibody tests check for autoimmune markers that confirm type 1 diabetes.",
+  "how often should blood sugar be tested?": "testing frequency depends on your treatment plan; your doctor will recommend the best schedule.",
+  "can you have diabetes without symptoms?": "yes, especially in type 2 diabetes, many people are diagnosed without having any symptoms.",
+  "can urine tests diagnose diabetes?": "urine tests are not used for diagnosis but can detect glucose or ketones, which support further testing.",
+  "should children be tested for diabetes?": "yes, especially if they have symptoms or risk factors such as obesity or family history.",
+  "how often should a1c be tested?": "a1c should be tested at least twice a year if you're stable, or every 3 months if adjusting treatment.",
+  "can diabetes be misdiagnosed?": "yes, sometimes type 1 and type 2 diabetes can be confused, especially in adults, so correct testing is important.",
+
+  "how does alcohol affect diabetes treatment?": "alcohol can lower or raise blood sugar and may interfere with medications, so moderation is important.",
+
+
+  "what is diabetes": "Diabetes is a chronic condition that affects how your body turns food into energy. There are two main types: Type 1 and Type 2.",
+      "what are symptons of diabetes": "Common symptoms include frequent urination, excessive thirst, extreme fatigue, blurred vision, and slow-healing wounds.",
+      "how to manage diabetes": "You can manage diabetes by maintaining a healthy diet, exercising regularly, monitoring blood sugar levels, and taking prescribed medications.",
+      "what foods to avoid": "Avoid sugary foods, refined carbs, and processed foods. Focus on whole grains, lean proteins, and vegetables.",
+      "normal blood sugar levels": "Normal fasting blood sugar levels are between 70-100 mg/dL. After meals, it should be less than 140 mg/dL.",
+      "how does diabetes affect the immune system": "diabetes can weaken the immune system, making it harder to fight off infections and increasing the risk of complications.",
+      "what is type 2 diabetes": "type 2 diabetes is a chronic condition where the body becomes resistant to insulin or doesn't produce enough insulin, leading to high blood sugar levels.",
+      "how does smoking affect diabetes": "smoking increases the risk of diabetes complications, such as heart disease, stroke, and poor circulation, and can worsen blood sugar control.",
+      "can diabetes cause eye problems": "yes, diabetes can cause eye problems like diabetic retinopathy, cataracts, and glaucoma, which may lead to vision loss if untreated.",
+      "can diabetes affect pregnancy": "yes, diabetes during pregnancy (gestational diabetes) can increase risks for both mother and baby, including high birth weight and preterm birth.",
+      "how is diabetes treated": "diabetes is treated with lifestyle changes (diet, exercise), medications, and insulin therapy, depending on the type and severity.",
+      "what is diabetic ketoacidosis": "diabetic ketoacidosis (dka) is a serious complication where high blood sugar and ketones cause the blood to become acidic, requiring emergency treatment.",
+      "how important is regular medical check-up for diabetes management": "regular check-ups are crucial for monitoring blood sugar, screening for complications, and adjusting treatment plans.",
+      "can diabetes be prevented": "type 2 diabetes can often be prevented or delayed with a healthy lifestyle, including diet, exercise, and weight management.",
+      "how do blood sugar levels affect health": "uncontrolled blood sugar levels can lead to complications like nerve damage, kidney disease, heart disease, and vision problems.",
+      "what are the early signs of diabetes": "early signs include increased thirst, frequent urination, unexplained weight loss, fatigue, and blurred vision.",
+      "what lifestyle changes can help manage diabetes": "healthy eating, regular exercise, weight management, and quitting smoking can significantly help manage diabetes.",
+      "what are the risk factors for type 2 diabetes": "risk factors include obesity, physical inactivity, family history, age, and prediabetes.",
+      "what are the long-term effects of diabetes": "long-term effects include heart disease, kidney damage, nerve damage, vision loss, and foot problems.",
+      "what is hyperglycemia": "hyperglycemia is high blood sugar, which can cause symptoms like thirst, frequent urination, and fatigue, and may lead to complications.",
+      "what is the impact of diabetes on daily life": "diabetes requires daily management, including monitoring blood sugar, taking medications, and maintaining a healthy lifestyle.",
+      "what role does exercise play in managing diabetes": "exercise helps control blood sugar, improve insulin sensitivity, and maintain a healthy weight.",
+      "can diabetes be cured": "there is no cure for diabetes, but it can be managed effectively with treatment and lifestyle changes.",
+      "how often should people with diabetes check their blood sugar": "frequency varies; some may need multiple daily checks, while others may check less often, as advised by their doctor.",
+      "what is insulin resistance": "insulin resistance occurs when cells don't respond well to insulin, leading to higher blood sugar levels and often precedes type 2 diabetes.",
+      "what is the difference between type 1 and type 2 diabetes": "type 1 is an autoimmune condition where the body attacks insulin-producing cells; type 2 involves insulin resistance or insufficient insulin production.",
+      "what is type 1 diabetes": "type 1 diabetes is an autoimmune disease where the pancreas produces little or no insulin, requiring lifelong insulin therapy.",
+      "what is continuous glucose monitoring": "continuous glucose monitoring (cgm) uses a sensor to track blood sugar levels in real-time, helping with diabetes management.",
+      "how does diet affect diabetes": "a balanced diet helps control blood sugar, manage weight, and reduce the risk of complications.",
+     "what is a diabetic diet": "a diabetic diet focuses on nutrient-dense foods, portion control, and monitoring carbohydrate intake to manage blood sugar.",
+    "is diabetes hereditary": "genetics play a role, especially in type 2 diabetes, but lifestyle factors are also significant contributors.",
+    "what are the main types of diabetes": "the main types are type 1, type 2, and gestational diabetes (occurring during pregnancy).",
+    "can diabetes lead to cardiovascular disease": "yes, diabetes increases the risk of cardiovascular diseases like heart attack and stroke due to high blood sugar damaging blood vessels.",
+    "what is gestational diabetes": "gestational diabetes occurs during pregnancy and usually resolves after birth but increases the risk of type 2 diabetes later.",
+    "what is diabetic neuropathy": "diabetic neuropathy is nerve damage caused by high blood sugar, leading to pain, numbness, or weakness, often in the hands and feet.",
+    "what are diabetic foot problems": "diabetes can cause foot problems like infections, ulcers, and poor circulation, sometimes leading to amputation if untreated.",
+    "can children get diabetes": "yes, children can develop type 1 diabetes (more common) or type 2 diabetes, especially with obesity or family history.",
+    "what medications are used to treat diabetes": "medications include insulin, metformin, sulfonylureas, and others, depending on the type and needs of the patient.",
+    "how does stress affect diabetes": "stress can raise blood sugar levels and make diabetes harder to manage, so stress reduction techniques are important.",
+    "can alcohol consumption affect diabetes": "alcohol can affect blood sugar levels and interact with diabetes medications, so moderation and monitoring are key.",
+    "what is an hba1c test": "the hba1c test measures average blood sugar levels over the past 2-3 months, helping monitor long-term diabetes control.",
+    "what is a diabetes care plan": "a diabetes care plan includes blood sugar monitoring, healthy eating, physical activity, medication, and regular medical check-ups.",
+    "can diabetes affect mental health": "yes, diabetes can increase the risk of depression and anxiety due to the stress of managing the condition.",
+    "what are the common myths about diabetes": "common myths include that eating sugar causes diabetes, or that people with diabetes can't eat any sugar.",
+    "how can technology help in managing diabetes": "technology like cgms and insulin pumps can improve blood sugar monitoring and insulin delivery for better management.",
+    "how does diabetes affect the kidneys": "diabetes can damage the kidneys (diabetic nephropathy), potentially leading to kidney failure if untreated.",
+    "how can weight loss impact diabetes": "weight loss can improve blood sugar control, reduce insulin resistance, and lower the risk of complications in type 2 diabetes.",
+    "how is diabetes diagnosed": "diabetes is diagnosed through blood tests like fasting glucose, oral glucose tolerance, or hba1c tests.",
+    "what causes diabetes": "type 1 is caused by an autoimmune reaction; type 2 is linked to genetics and lifestyle factors like obesity and inactivity.",
+    "what are the symptoms of diabetes": "symptoms include increased thirst, frequent urination, fatigue, blurred vision, slow-healing sores, and unexplained weight loss.",
+    "can pets get diabetes": "yes, pets like dogs and cats can develop diabetes, requiring insulin therapy and dietary management similar to humans.",
+    "what is a normal blood sugar level": "A normal blood sugar level is 80–130 mg/dL before meals and less than 180 mg/dL two hours after meals.",
+    "how often should I check my blood sugar": "It depends on your treatment. If you're on insulin, check 2–4 times a day. If not, once a day or a few times a week may be enough.",
+    "what should I do if my sugar is too high": "Drink water, move around, avoid carbs, and if it's over 300 mg/dL, contact your doctor.",
+    "what should I do if my sugar is too low": "Eat or drink something sugary, like juice or glucose tablets. Wait 15 minutes and check again.",
+    "can you help me track my sugar levels": "Yes! Share your readings and I can help you monitor trends and averages.",
+    "how do I use a glucometer": "Wash hands, insert a strip, prick your finger, place a drop of blood on the strip, and wait for the result.",
+    "what time of day should I test my blood sugar": "Common times are before meals, 2 hours after meals, and before bed.",
+    "what is fasting blood sugar": "It's your blood sugar level after not eating for 8 hours, usually checked in the morning.",
+    "what is postprandial blood sugar": "It's the blood sugar level 1 to 2 hours after eating, to see how your body handles food.",
+    "how do I interpret my blood sugar readings": "80–130 mg/dL before meals is good; less than 180 mg/dL after meals is also good; below 70 is too low; above 180 is high.",
+    "what medicines are used for type 2 diabetes": "Common ones include metformin, sulfonylureas, DPP-4 inhibitors, GLP-1 receptor agonists, and SGLT2 inhibitors.",
+    "do I have to take insulin if I have diabetes": "Type 1 always needs insulin. Type 2 may not unless tablets aren't working well.",
+    "what is metformin": "A common medicine for type 2 diabetes. It helps your body use insulin better and reduces sugar from your liver.",
+    "what are insulin pens": "They're easy-to-use devices for injecting insulin, more convenient than syringes.",
+    "how do I inject insulin": "Clean the skin, pinch an area like the belly, insert the needle, and push the insulin in.",
+    "when should I take my insulin": "It depends on the type of insulin. Some are taken before meals, others once a day.",
+    "can I stop my medication if I feel fine": "No. You should always follow your doctor's instructions.",
+    "what are the side effects of diabetes medication": "They vary. Some cause stomach issues, low sugar, or weight changes.",
+    "what happens if I miss a dose of my diabetes medicine": "Take it when you remember. If it's close to your next dose, skip it. Don't take two doses together.",
+    "can diabetes medication cure my condition": "No. It helps manage the condition, but not cure it.",
+    "what foods should I eat with diabetes": "Vegetables, whole grains, lean proteins, healthy fats, and small portions of fruit.",
+    "what foods should I avoid": "Sugary drinks, sweets, fried food, and refined carbs like white bread.",
+    "how many meals should I eat per day": "Three balanced meals and 1–2 healthy snacks. Don't skip meals.",
+    "can I eat fruits if I have diabetes": "Yes, in small portions. Pick low-sugar fruits like apples, berries, or oranges.",
+    "is sugar completely off-limits": "No, but you should limit it. Occasional treats are okay if your sugar is under control.",
+    "can I drink alcohol": "Yes, in moderation. Always eat with alcohol and check your sugar levels.",
+    "what is the best diet plan for diabetes": "A balanced diet with carbs, proteins, and healthy fats. A dietitian can help customize it.",
+    "what is carb counting": "A method to track how many carbs you eat, since they affect blood sugar the most.",
+    "do I need to eat sugar-free products": "Not always. Some sugar-free products still have carbs and calories. Read labels.",
+    "what are some healthy snacks for diabetics": "Nuts, Greek yogurt, veggie sticks, boiled eggs, or a small fruit.",
+    "can i eat rice if i have diabetes": "Yes, but choose brown rice or smaller portions of white rice. Pair it with vegetables or protein.", 
+    "how much water should a diabetic drink daily": "Aim for about 8 glasses (2 liters) a day unless your doctor says otherwise.", 
+    "can i have cheat meals with diabetes": "Occasionally, yes. But try to make healthier versions and keep portions small.", 
+    "should i follow a keto diet for diabetes": "It may help some people, but it's not for everyone. Talk to your doctor or dietitian first.", 
+    "is intermittent fasting safe for diabetics": "It depends on your medication and health. Check with your doctor before starting.", 
+    "can i drink tea or coffee": "Yes, without added sugar. Black coffee or unsweetened tea is best.", 
+    "how do carbs affect blood sugar": "Carbs break down into sugar in your body, raising your blood glucose levels.", 
+    "can i be a vegetarian with diabetes": "Yes. Just include enough protein, fiber, and healthy fats in your meals.", 
+    "what is the glycemic index": "It ranks how quickly foods raise blood sugar. Low-GI foods are better for diabetes.", 
+    "are artificial sweeteners safe": "In moderation, yes. Most are approved and considered safe for people with diabetes.",
+    "how does exercise help with diabetes": "It lowers blood sugar, improves insulin use, and helps manage weight.",
+    "how much should i exercise each week": "Aim for at least 150 minutes of moderate activity, like walking, per week.",
+    "what are the best exercises for diabetes": "Walking, swimming, biking, yoga, and strength training are great choices.",
+    "can i exercise with high blood sugar": "If it's very high (over 300 mg/dL), avoid intense activity and check for ketones first.",
+    "can i exercise with low blood sugar": "No. Eat something first and wait for your sugar to go up.",
+    "should i check sugar before and after exercise": "Yes, especially if you take insulin or get low sugar easily.",
+    "can strength training help with diabetes": "Yes! It helps with insulin sensitivity and builds muscle.",
+    "what should i eat before exercising": "A small snack with carbs, like a banana or toast, can help prevent lows.",
+    "can i walk after meals to control sugar": "Yes! A short 10–15 minute walk can help lower post-meal blood sugar.",
+    "what precautions should i take while exercising": "Stay hydrated, wear good shoes, and carry a quick sugar snack in case of lows.",
+    "what are the symptoms of type 1 diabetes": "Increased thirst, frequent urination, weight loss, tiredness, and blurry vision.", 
+    "what are the symptoms of type 2 diabetes": "Many people have no symptoms. Others may feel thirsty, tired, or have frequent urination.", 
+    "what's the difference between type 1 and type 2 diabetes": "Type 1 is when the body makes no insulin. Type 2 is when insulin doesn't work properly or isn't enough.", 
+    "can diabetes be reversed": "Type 2 diabetes may go into remission with weight loss, exercise, and diet. Type 1 cannot be reversed.", 
+    "how is diabetes diagnosed": "Through blood tests like fasting glucose, HbA1c, or an oral glucose tolerance test.", 
+    "what is prediabetes": "A condition where your blood sugar is higher than normal but not high enough to be diabetes.", 
+    "how often should i get tested for diabetes": "If you're over 45 or at risk, get tested every 1–3 years.", 
+    "what is gestational diabetes": "Diabetes that develops during pregnancy and usually goes away after birth.", 
+    "can kids get diabetes": "Yes. Type 1 is more common in kids, but type 2 is rising too.", 
+    "is diabetes genetic": "Yes, it can run in families, especially type 2 diabetes.",
+
+"what are the main types of diabetes": "the main types are type 1, type 2, and gestational diabetes (occurring during pregnancy).",
+  "can diabetes lead to cardiovascular disease": "yes, diabetes increases the risk of cardiovascular diseases like heart attack and stroke due to high blood sugar damaging blood vessels.",
+  "what is gestational diabetes": "gestational diabetes occurs during pregnancy and usually resolves after birth but increases the risk of type 2 diabetes later.",
+  "what is diabetic neuropathy": "diabetic neuropathy is nerve damage caused by high blood sugar, leading to pain, numbness, or weakness, often in the hands and feet.",
+  "what are diabetic foot problems": "diabetes can cause foot problems like infections, ulcers, and poor circulation, sometimes leading to amputation if untreated.",
+  "can children get diabetes": "yes, children can develop type 1 diabetes (more common) or type 2 diabetes, especially with obesity or family history.",
+  "what medications are used to treat diabetes": "medications include insulin, metformin, sulfonylureas, and others, depending on the type and needs of the patient.",
+  "how does stress affect diabetes": "stress can raise blood sugar levels and make diabetes harder to manage, so stress reduction techniques are important.",
+  "can alcohol consumption affect diabetes": "alcohol can affect blood sugar levels and interact with diabetes medications, so moderation and monitoring are key.",
+  "what is an hba1c test": "the hba1c test measures average blood sugar levels over the past 2-3 months, helping monitor long-term diabetes control.",
+  "what is a diabetes care plan": "a diabetes care plan includes blood sugar monitoring, healthy eating, physical activity, medication, and regular medical check-ups.",
+  "can diabetes affect mental health": "yes, diabetes can increase the risk of depression and anxiety due to the stress of managing the condition.",
+  "what are the common myths about diabetes": "common myths include that eating sugar causes diabetes, or that people with diabetes can't eat any sugar.",
+  "how can technology help in managing diabetes": "technology like cgms and insulin pumps can improve blood sugar monitoring and insulin delivery for better management.",
+  "how does diabetes affect the kidneys": "diabetes can damage the kidneys (diabetic nephropathy), potentially leading to kidney failure if untreated.",
+  "how can weight loss impact diabetes": "weight loss can improve blood sugar control, reduce insulin resistance, and lower the risk of complications in type 2 diabetes.",
+  "how is diabetes diagnosed": "diabetes is diagnosed through blood tests like fasting glucose, oral glucose tolerance, or hba1c tests.",
+  "what causes diabetes": "type 1 is caused by an autoimmune reaction; type 2 is linked to genetics and lifestyle factors like obesity and inactivity.",
+  "what are the symptoms of diabetes": "symptoms include increased thirst, frequent urination, fatigue, blurred vision, slow-healing sores, and unexplained weight loss.",
+  "can pets get diabetes": "yes, pets like dogs and cats can develop diabetes, requiring insulin therapy and dietary management similar to humans.",
+"what is a normal blood sugar level": "A normal blood sugar level is 80–130 mg/dL before meals and less than 180 mg/dL two hours after meals.",
+"how often should I check my blood sugar": "It depends on your treatment. If you're on insulin, check 2–4 times a day. If not, once a day or a few times a week may be enough.",
+"what should I do if my sugar is too high": "Drink water, move around, avoid carbs, and if it's over 300 mg/dL, contact your doctor.",
+"what should I do if my sugar is too low": "Eat or drink something sugary, like juice or glucose tablets. Wait 15 minutes and check again.",
+"can you help me track my sugar levels": "Yes! Share your readings and I can help you monitor trends and averages.",
+"how do I use a glucometer": "Wash hands, insert a strip, prick your finger, place a drop of blood on the strip, and wait for the result.",
+"what time of day should I test my blood sugar": "Common times are before meals, 2 hours after meals, and before bed.",
+"what is fasting blood sugar": "It's your blood sugar level after not eating for 8 hours, usually checked in the morning.",
+"what is postprandial blood sugar": "It's the blood sugar level 1 to 2 hours after eating, to see how your body handles food.",
+"how do I interpret my blood sugar readings": "80–130 mg/dL before meals is good; less than 180 mg/dL after meals is also good; below 70 is too low; above 180 is high.",
+
+"what medicines are used for type 2 diabetes": "Common ones include metformin, sulfonylureas, DPP-4 inhibitors, GLP-1 receptor agonists, and SGLT2 inhibitors.",
+"do I have to take insulin if I have diabetes": "Type 1 always needs insulin. Type 2 may not unless tablets aren’t working well.",
+"what is metformin": "A common medicine for type 2 diabetes. It helps your body use insulin better and reduces sugar from your liver.",
+"what are insulin pens": "They’re easy-to-use devices for injecting insulin, more convenient than syringes.",
+"how do I inject insulin": "Clean the skin, pinch an area like the belly, insert the needle, and push the insulin in.",
+"when should I take my insulin": "It depends on the type of insulin. Some are taken before meals, others once a day.",
+"can I stop my medication if I feel fine": "No. You should always follow your doctor’s instructions.",
+"what are the side effects of diabetes medication": "They vary. Some cause stomach issues, low sugar, or weight changes.",
+"what happens if I miss a dose of my diabetes medicine": "Take it when you remember. If it’s close to your next dose, skip it. Don’t take two doses together.",
+"can diabetes medication cure my condition": "No. It helps manage the condition, but not cure it.",
+
+"what foods should I eat with diabetes": "Vegetables, whole grains, lean proteins, healthy fats, and small portions of fruit.",
+"what foods should I avoid": "Sugary drinks, sweets, fried food, and refined carbs like white bread.",
+"how many meals should I eat per day": "Three balanced meals and 1–2 healthy snacks. Don’t skip meals.",
+"can I eat fruits if I have diabetes": "Yes, in small portions. Pick low-sugar fruits like apples, berries, or oranges.",
+"is sugar completely off-limits": "No, but you should limit it. Occasional treats are okay if your sugar is under control.",
+"can I drink alcohol": "Yes, in moderation. Always eat with alcohol and check your sugar levels.",
+"what is the best diet plan for diabetes": "A balanced diet with carbs, proteins, and healthy fats. A dietitian can help customize it.",
+"what is carb counting": "A method to track how many carbs you eat, since they affect blood sugar the most.",
+"do I need to eat sugar-free products": "Not always. Some sugar-free products still have carbs and calories. Read labels.",
+"what are some healthy snacks for diabetics": "Nuts, Greek yogurt, veggie sticks, boiled eggs, or a small fruit.",
+
+"can i eat rice if i have diabetes": "Yes, but choose brown rice or smaller portions of white rice. Pair it with vegetables or protein.",
+ "how much water should a diabetic drink daily": "Aim for about 8 glasses (2 liters) a day unless your doctor says otherwise.", 
+ "can i have cheat meals with diabetes": "Occasionally, yes. But try to make healthier versions and keep portions small.", 
+ "should i follow a keto diet for diabetes": "It may help some people, but it’s not for everyone. Talk to your doctor or dietitian first.",
+ "is intermittent fasting safe for diabetics": "It depends on your medication and health. Check with your doctor before starting.", 
+ "can i drink tea or coffee": "Yes, without added sugar. Black coffee or unsweetened tea is best.", 
+ "how do carbs affect blood sugar": "Carbs break down into sugar in your body, raising your blood glucose levels.", 
+ "can i be a vegetarian with diabetes": "Yes. Just include enough protein, fiber, and healthy fats in your meals.",
+  "what is the glycemic index": "It ranks how quickly foods raise blood sugar. Low-GI foods are better for diabetes.",
+ "are artificial sweeteners safe": "In moderation, yes. Most are approved and considered safe for people with diabetes.",
+
+"how does exercise help with diabetes": "It lowers blood sugar, improves insulin use, and helps manage weight.",
+"how much should i exercise each week": "Aim for at least 150 minutes of moderate activity, like walking, per week.",
+"what are the best exercises for diabetes": "Walking, swimming, biking, yoga, and strength training are great choices.",
+"can i exercise with high blood sugar": "If it’s very high (over 300 mg/dL), avoid intense activity and check for ketones first.",
+"can i exercise with low blood sugar": "No. Eat something first and wait for your sugar to go up.",
+"should i check sugar before and after exercise": "Yes, especially if you take insulin or get low sugar easily.",
+"can strength training help with diabetes": "Yes! It helps with insulin sensitivity and builds muscle.",
+"what should i eat before exercising": "A small snack with carbs, like a banana or toast, can help prevent lows.",
+"can i walk after meals to control sugar": "Yes! A short 10–15 minute walk can help lower post-meal blood sugar.",
+"what precautions should i take while exercising": "Stay hydrated, wear good shoes, and carry a quick sugar snack in case of lows.",
+
+  "what foods to avoid": "avoid sugary foods, refined carbs, and processed foods. focus on whole grains, lean proteins, and vegetables.",
+  "what is type 1 diabetes": "type 1 diabetes is an autoimmune condition where the body attacks insulin-producing cells in the pancreas.",
+  "what is type 2 diabetes": "type 2 diabetes is a chronic condition where the body becomes resistant to insulin or doesn’t produce enough.",
+  "can diabetes be cured": "diabetes cannot be cured but can be managed with lifestyle changes and medication.",
+  "what are the symptoms of diabetes": "common symptoms include frequent urination, excessive thirst, fatigue, and blurred vision.",
+  "can type 2 diabetes be reversed": "some people can reverse type 2 diabetes with weight loss, healthy eating, and regular exercise.",
+  "how is diabetes diagnosed": "diabetes is diagnosed using blood tests such as fasting glucose, a1c, or oral glucose tolerance test.",
+  "what is a normal blood sugar level": "a normal fasting blood sugar level is between 70 and 99 mg/dl.",
+  "what is a dangerous blood sugar level": "blood sugar below 70 mg/dl or above 180 mg/dl can be dangerous and should be addressed promptly.",
+  "how often should i check my blood sugar": "it depends on the type of diabetes and treatment plan. consult your doctor for personalized advice.",
+  "what is insulin": "insulin is a hormone that helps regulate blood sugar by allowing glucose to enter cells for energy.",
+  "do all diabetics need insulin": "people with type 1 diabetes always need insulin. some with type 2 may need it if other treatments aren’t enough.",
+  "can i eat fruit with diabetes": "yes, but choose whole fruits in moderation and avoid fruit juices or dried fruits with added sugar.",
+  "is exercise good for diabetes": "yes, regular exercise helps lower blood sugar and improves insulin sensitivity.",
+  "can stress affect blood sugar levels": "yes, stress can cause blood sugar levels to rise due to hormone changes in the body.",
+  "what is a1c": "a1c is a blood test that shows your average blood sugar level over the past 2-3 months.",
+  "how often should i get my a1c checked": "most people with diabetes should check their a1c every 3 to 6 months.",
+  "what are diabetic complications": "complications include heart disease, kidney damage, nerve damage, and eye problems.",
+  "can diabetes cause vision loss": "yes, diabetes can lead to diabetic retinopathy, which can cause vision loss if untreated.",
+  "what is hypoglycemia": "hypoglycemia is a condition where blood sugar drops too low, usually below 70 mg/dl.",
+  "what is hyperglycemia": "hyperglycemia is when blood sugar is too high, often over 180 mg/dl after meals.",
+  "what should i do if my blood sugar is too low": "eat or drink something with 15 grams of fast-acting sugar, like juice or glucose tablets.",
+  "can i drink alcohol with diabetes": "yes, in moderation and with food, but monitor blood sugar as alcohol can affect levels.",
+  "how does diabetes affect the kidneys": "high blood sugar can damage the kidneys over time, leading to diabetic nephropathy.",
+  "is type 1 diabetes genetic": "genetics play a role, but environmental factors also contribute to developing type 1 diabetes.",
+  "is type 2 diabetes genetic": "yes, it tends to run in families, but lifestyle choices are also major factors.",
+  "can children get type 2 diabetes": "yes, though more common in adults, increasing cases are seen in overweight children and teens.",
+  "what is gestational diabetes": "gestational diabetes occurs during pregnancy and usually goes away after childbirth.",
+  "does diabetes affect pregnancy": "yes, it can lead to complications if not managed. close monitoring is important.",
+  "can i prevent type 2 diabetes": "yes, maintaining a healthy weight, eating well, and exercising can reduce your risk.",
+
+  
+  "what is difference between type 1 and type 2 diabetes": "type 1 is an autoimmune disease where the body destroys insulin-producing cells, while type 2 is caused by insulin resistance or insufficient insulin production.",
+  "at what age does type 1 diabetes usually appear": "type 1 diabetes often develops in children, teens, or young adults.",
+  "at what age does type 2 diabetes usually appear": "type 2 diabetes usually develops in adults over 45, but is increasingly seen in younger people.",
+  "does type 1 diabetes have a known cause": "type 1 is caused by an autoimmune reaction, and its exact cause is unknown.",
+  "is type 2 diabetes preventable": "yes, type 2 can often be prevented or delayed with lifestyle changes.",
+  "do both type 1 and type 2 diabetes need insulin": "type 1 always needs insulin, while type 2 may be managed with diet, exercise, pills, or insulin.",
+  "which diabetes is more common": "type 2 diabetes is more common, accounting for about 90-95% of all diabetes cases.",
+  "can lifestyle changes reverse type 1 diabetes?": "no, type 1 cannot be reversed and requires lifelong insulin therapy.",
+  "can lifestyle changes reverse type 2 diabetes": "yes, with weight loss, exercise, and healthy eating, some people can reverse type 2 diabetes.",
+  "which type of diabetes is considered an autoimmune disease": "type 1 diabetes is an autoimmune disease, while type 2 is not.",
+
+  
+  "what is glucose": "glucose is a type of sugar that your body uses for energy. it comes from the food you eat.",
+  "why is glucose important for the body": "glucose is the main source of energy for the brain, muscles, and cells in the body.",
+  "how does the body use glucose": "glucose enters the bloodstream and is used by cells for energy with the help of insulin.",
+  "what is normal blood glucose level": "a normal fasting blood glucose level is between 70 and 99 mg/dl.",
+  "what is high blood glucose": "high blood glucose, or hyperglycemia, occurs when there is too much sugar in the blood.",
+  "what is low blood glucose": "low blood glucose, or hypoglycemia, happens when your blood sugar drops below 70 mg/dl.",
+  "how does insulin affect glucose": "insulin helps move glucose from the blood into the cells for energy.",
+  "what causes blood glucose to rise": "eating sugary foods, stress, illness, or not taking diabetes medication can raise blood glucose.",
+  "what causes blood glucose to drop": "too much insulin, skipping meals, or intense exercise can lower blood glucose.",
+  "how is glucose measured": "glucose is measured using a blood glucose meter or continuous glucose monitor (cgm).",
+  "how often should glucose be checked": "it depends on the type of diabetes and treatment plan. check as advised by your doctor.",
+  "what is a glucose spike": "a glucose spike is a sudden rise in blood sugar after eating high-carb or sugary foods.",
+  "can drinking water lower blood glucose": "yes, staying hydrated helps the kidneys flush out excess sugar from the blood.",
+  "does exercise affect glucose levels": "yes, exercise usually lowers glucose levels by helping muscles use sugar for energy.",
+  "what is glucose tolerance test": "a glucose tolerance test checks how your body processes sugar and helps diagnose diabetes or prediabetes.",
+  "what is fasting blood glucose": "fasting blood glucose is the level of sugar in your blood after not eating for at least 8 hours.",
+  "what is postprandial glucose": "postprandial glucose is the blood sugar level measured 1-2 hours after eating.",
+  "how does stress affect glucose levels": "stress hormones like cortisol can raise blood sugar by making the body less sensitive to insulin.",
+  "what is a continuous glucose monitor (cgm)": "a cgm is a device that tracks glucose levels throughout the day and night automatically.",
+  "what is random blood glucose test": "a random glucose test measures blood sugar at any time, regardless of when you last ate.",
+  "can certain foods stabilize blood glucose": "yes, foods high in fiber and protein can help keep glucose levels stable.",
+  "does sleep affect blood glucose": "yes, poor sleep can cause insulin resistance and raise blood sugar levels.",
+  "how do carbs affect glucose": "carbohydrates are broken down into glucose, which raises blood sugar after eating.",
+  "what is glycemic index": "glycemic index is a measure of how quickly a food raises your blood sugar levels.",
+  "can low glucose be dangerous": "yes, severe hypoglycemia can cause confusion, seizures, or even loss of consciousness.",
+  "what are symptoms of low glucose": "symptoms include shakiness, sweating, dizziness, confusion, and hunger.",
+  "what are symptoms of high glucose": "symptoms include frequent urination, thirst, fatigue, and blurry vision.",
+  "how do fiber-rich foods affect glucose": "fiber slows digestion and sugar absorption, helping keep blood sugar levels steady.",
+  "does caffeine affect glucose levels": "in some people, caffeine can raise blood sugar or affect insulin sensitivity.",
+  "can blood glucose fluctuate during the day": "yes, blood sugar naturally rises and falls depending on meals, activity, and hormones.",
+
+"what are symptoms of type 1 diabetes": "Increased thirst, frequent urination, weight loss, tiredness, and blurry vision.",
+ "what are symptoms of type 2 diabetes": "Many people have no symptoms. Others may feel thirsty, tired, or have frequent urination.",
+ "what is difference between type 1 and type 2 diabetes": "Type 1 is when the body makes no insulin. Type 2 is when insulin doesn't work properly or isn’t enough.",
+ "can diabetes be reversed": "Type 2 diabetes may go into remission with weight loss, exercise, and diet. Type 1 cannot be reversed.", "how is diabetes diagnosed?": "Through blood tests like fasting glucose, HbA1c, or an oral glucose tolerance test.",
+ "what is prediabetes": "A condition where your blood sugar is higher than normal but not high enough to be diabetes.", 
+ "how often should i get tested for diabetes": "If you're over 45 or at risk, get tested every 1–3 years.",
+ "what is gestational diabetes": "Diabetes that develops during pregnancy and usually goes away after birth.", 
+ "can kids get diabetes": "Yes. Type 1 is more common in kids, but type 2 is rising too.",
+ "is diabetes genetic": "Yes, it can run in families, especially type 2 diabetes." ,
+
+ 
+  "how is type 1 diabetes treated": "type 1 diabetes is treated with daily insulin injections or an insulin pump, along with blood sugar monitoring.",
+  "how is type 2 diabetes treated": "type 2 diabetes is treated with lifestyle changes, oral medications, and sometimes insulin.",
+  "what medications are used for type 2 diabetes": "common medications include metformin, sulfonylureas, dpp-4 inhibitors, glp-1 receptor agonists, and sglt2 inhibitors.",
+  "what is insulin therapy": "insulin therapy involves injecting insulin to help manage blood sugar in people who cannot produce enough on their own.",
+  "do all type 2 diabetics need insulin": "not all, but some people with type 2 may eventually need insulin if other treatments are not enough.",
+  "can lifestyle changes help in diabetes treatment": "yes, diet, exercise, weight loss, and quitting smoking are key parts of diabetes management.",
+  "what is the role of diet in diabetes treatment": "a healthy diet helps control blood sugar, maintain a healthy weight, and reduce complications.",
+  "how does exercise help treat diabetes": "exercise improves insulin sensitivity and helps lower blood sugar levels.",
+  "what is the best diet for diabetes": "a balanced diet with whole grains, lean proteins, healthy fats, vegetables, and limited sugars is best.",
+  "what is carb counting": "carb counting is a method of tracking carbohydrates to manage blood sugar levels more precisely, especially in type 1 diabetes.",
+  "can weight loss reverse type 2 diabetes": "yes, in many cases, weight loss can significantly improve or even reverse type 2 diabetes.",
+  "what is metformin": "metformin is a first-line oral medication for type 2 diabetes that lowers glucose production in the liver.",
+  "are there natural treatments for diabetes": "while lifestyle changes help, no natural remedy can replace medical treatment for diabetes.",
+  "can type 1 diabetes be managed without insulin": "no, people with type 1 diabetes must take insulin to survive.",
+  "what is an insulin pump": "an insulin pump is a device that delivers a steady flow of insulin throughout the day.",
+  "what is cgm in diabetes treatment": "a continuous glucose monitor (cgm) tracks blood sugar levels in real-time to help manage treatment.",
+  "can bariatric surgery treat type 2 diabetes": "yes, in some cases, weight loss surgery can improve or even put type 2 diabetes in remission.",
+  "how often should diabetes treatment plans be reviewed": "treatment plans should be reviewed regularly, typically every 3 to 6 months or as needed.",
+  "what are side effects of diabetes medications": "side effects vary but may include nausea, low blood sugar, weight gain, or digestive issues.",
+  "what is basal-bolus insulin therapy": "basal-bolus therapy uses long-acting insulin for baseline needs and short-acting insulin at meals.",
+  "what is the dawn phenomenon": "the dawn phenomenon is a natural early morning rise in blood sugar due to hormone changes.",
+  "what is sliding scale insulin": "sliding scale insulin is a method of adjusting insulin doses based on current blood sugar readings.",
+  "how is hypoglycemia treated in diabetics": "eat or drink 15 grams of fast-acting carbs like juice or glucose tablets, then recheck blood sugar.",
+  "how is hyperglycemia treated": "treatment may include insulin, exercise, hydration, and medication adjustments.",
+  "can diabetes medications be stopped if blood sugar improves": "only with a doctor’s guidance. never stop medications without medical advice.",
+  "can stress management help treat diabetes": "yes, reducing stress can help lower blood sugar and improve overall diabetes control.",
+  "what is diabetes self-management education": "it teaches skills like blood sugar monitoring, healthy eating, and medication use to manage diabetes.",
+  "is there a cure for type 1 diabetes": "no, type 1 diabetes has no cure, but it can be managed effectively with proper treatment.",
+  "is there a cure for type 2 diabetes": "type 2 diabetes cannot be cured, but it can go into remission with significant lifestyle changes.",
+
+  
+  "what causes type 1 diabetes": "type 1 diabetes is caused by an autoimmune reaction that destroys insulin-producing cells in the pancreas.",
+  "what causes type 2 diabetes": "type 2 diabetes is usually caused by insulin resistance and the body’s inability to use insulin properly.",
+  "is type 1 diabetes hereditary": "genetics can play a role, but not everyone with a family history of type 1 will get it.",
+  "is type 2 diabetes hereditary": "yes, family history increases the risk of developing type 2 diabetes.",
+  "can being overweight cause type 2 diabetes": "yes, excess body fat, especially around the abdomen, increases insulin resistance.",
+  "can a virus cause type 1 diabetes": "some viruses are believed to trigger type 1 diabetes in genetically predisposed individuals.",
+  "who is at risk for type 1 diabetes": "children, teens, and people with a family history of type 1 are at higher risk.",
+  "who is at risk for type 2 diabetes": "people over 45, those with obesity, sedentary lifestyles, or a family history are at risk.",
+  "can lifestyle choices increase the risk of type 2 diabetes": "yes, poor diet, physical inactivity, and smoking increase the risk.",
+  "does stress cause diabetes": "chronic stress can raise blood sugar and contribute to the development of type 2 diabetes.",
+  "can pregnancy increase the risk of diabetes": "yes, women with gestational diabetes have a higher risk of developing type 2 diabetes later.",
+  "can high blood pressure be a risk factor for diabetes": "yes, high blood pressure is often linked with insulin resistance and type 2 diabetes.",
+  "can high cholesterol lead to diabetes": "high levels of bad cholesterol can increase the risk of type 2 diabetes.",
+  "can ethnicity affect diabetes risk": "yes, certain ethnic groups like south asians, african americans, and hispanics have a higher risk.",
+  "can lack of sleep cause diabetes": "yes, poor sleep patterns can increase insulin resistance and raise the risk of type 2 diabetes.",
+
+  
+  "how is type 1 diabetes diagnosed": "type 1 is diagnosed through blood tests like fasting glucose, a1c, and antibody testing.",
+  "how is type 2 diabetes diagnosed": "type 2 is diagnosed using fasting glucose, a1c, or an oral glucose tolerance test.",
+  "what is the a1c test": "the a1c test shows your average blood sugar over the past 2 to 3 months.",
+  "what is a fasting blood sugar test": "a fasting blood sugar test measures glucose after you haven’t eaten for at least 8 hours.",
+  "what is a random blood sugar test": "a random glucose test checks your blood sugar at any time, regardless of meals.",
+  "what is an oral glucose tolerance test": "this test checks your blood sugar before and after drinking a sugary liquid to see how your body handles glucose.",
+  "what blood sugar level means diabetes": "a fasting glucose of 126 mg/dl or higher, or an a1c of 6.5% or more, indicates diabetes.",
+  "what blood sugar range is considered prediabetes": "a fasting blood sugar of 100–125 mg/dl or a1c of 5.7–6.4% is considered prediabetes.",
+  "what are diabetes antibodies tests": "antibody tests check for autoimmune markers that confirm type 1 diabetes.",
+  "how often should blood sugar be tested": "testing frequency depends on your treatment plan; your doctor will recommend the best schedule.",
+  "can you have diabetes without symptoms": "yes, especially in type 2 diabetes, many people are diagnosed without having any symptoms.",
+  "can urine tests diagnose diabetes": "urine tests are not used for diagnosis but can detect glucose or ketones, which support further testing.",
+  "should children be tested for diabetes": "yes, especially if they have symptoms or risk factors such as obesity or family history.",
+  "how often should a1c be tested": "a1c should be tested at least twice a year if you're stable, or every 3 months if adjusting treatment.",
+  "can diabetes be misdiagnosed": "yes, sometimes type 1 and type 2 diabetes can be confused, especially in adults, so correct testing is important.",
+
+  "how does alcohol affect diabetes treatment": "alcohol can lower or raise blood sugar and may interfere with medications, so moderation is important.",
+
+
+
+    "default": "I'm here to help with diabetes-related questions. Please ask me anything specific!",
+     };
+
+    
+
+    // Simulate bot typing
+    function showTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.textContent = "Typing...";
+      chatBox.appendChild(typingIndicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return typingIndicator;
+    }
+
+    // Remove typing indicator
+    function hideTypingIndicator(typingIndicator) {
+      typingIndicator.remove();
+    }
+
+    // Send user message and get bot response
+    function sendMessage() {
+      const userMessage = userInput.value.trim().toLowerCase();
+      if (userMessage === "") {
+        alert("Please enter a message.");
+        return;
+      }
+
+      // Display user message
+      const userMessageElement = document.createElement('div');
+      userMessageElement.className = 'message user';
+      userMessageElement.textContent = userMessage;
+      chatBox.appendChild(userMessageElement);
+
+      // Clear input
+      userInput.value = "";
+
+      // Show typing indicator
+      const typingIndicator = showTypingIndicator();
+
+      // Simulate bot response delay
+      setTimeout(() => {
+        hideTypingIndicator(typingIndicator);
+
+        // Generate bot response
+        const botResponse = responses[userMessage] || responses["default"];
+        const botMessageElement = document.createElement('div');
+        botMessageElement.className = 'message bot';
+        botMessageElement.textContent = botResponse;
+        chatBox.appendChild(botMessageElement);
+
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1500); // Simulate 1.5 seconds delay
+    }
+
+    // Allow pressing Enter to send message
+    userInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Diabetes Hub - Your Complete Diabetes Resource</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 74px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 0.7rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-bg);
+            color: var(--accent-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .dashboard-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .widget {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .widget:hover {
+            transform: translateY(-5px);
+        }
+        
+        .widget-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .widget-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .widget-content {
+            color: #555;
+        }
+        
+        .chatbot-widget {
+            background-color: #f0f7ff;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .chatbot-form {
+            display: flex;
+            margin-top: 1rem;
+        }
+        
+        .chatbot-form input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+        
+        .chatbot-form button {
+            padding: 0.8rem 1.2rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        
+        .category-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .category-item {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .category-item.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-dropdown {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-image {
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resource-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .badge-video {
+            background-color: rgba(214, 48, 49, 0.8);
+            color: white;
+        }
+        
+        .badge-article {
+            background-color: rgba(9, 132, 227, 0.8);
+            color: white;
+        }
+        
+        .badge-tool {
+            background-color: rgba(0, 184, 148, 0.8);
+            color: white;
+        }
+        
+        .resource-content {
+            padding: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            color: var(--primary-color);
+        }
+        
+        .resource-provider {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .resource-provider img {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            border-radius: 50%;
+        }
+        
+        .resource-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .resource-rating {
+            display: flex;
+            align-items: center;
+            color: var(--warning-color);
+        }
+        
+        .resource-price {
+            padding: 0.3rem 0.7rem;
+            background-color: #e6f7e6;
+            color: var(--success-color);
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 0.7rem 1.2rem;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .wiki-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+        
+        .wiki-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .wiki-subtitle {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px dotted var(--border-color);
+        }
+        
+        .wiki-text {
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .wiki-infobox {
+            float: right;
+            width: 300px;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin: 0 0 1rem 1rem;
+            padding: 1rem;
+        }
+        
+        .infobox-title {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .infobox-image {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .infobox-image img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        
+        .infobox-row {
+            display: flex;
+            border-bottom: 1px dotted #ddd;
+            padding: 0.5rem 0;
+        }
+        
+        .infobox-label {
+            flex: 1;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .infobox-data {
+            flex: 2;
+        }
+        
+        .table-of-contents {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            width: fit-content;
+            min-width: 250px;
+        }
+        
+        .toc-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc-list {
+            list-style-position: inside;
+        }
+        
+        .toc-item {
+            margin-bottom: 0.3rem;
+        }
+        
+        .toc-link {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .toc-link:hover {
+            text-decoration: underline;
+        }
+        
+        .references {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .reference-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .reference-list {
+            list-style-position: inside;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .reference-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .reference-link {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+        
+        .related-articles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .related-article {
+            flex: 1;
+            min-width: 250px;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .related-article:hover {
+            background-color: #edf2f7;
+        }
+        
+        .related-article-title {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .related-article-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .related-article-link:hover {
+            text-decoration: underline;
+        }
+        
+        .chatbot-button {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .chatbot-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .stats-widget .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #555;
+        }
+        
+        .news-widget .news-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .news-widget .news-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .news-image {
+            width: 80px;
+            height: 60px;
+            border-radius: 5px;
+            margin-right: 1rem;
+            overflow: hidden;
+        }
+        
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            flex: 1;
+        }
+        
+        .news-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            color: var(--primary-color);
+        }
+        
+        .news-date {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .tools-widget .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .tool-item {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .tool-item:hover {
+            background-color: #edf2f7;
+        }
+        
+        .tool-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .tool-name {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .wiki-infobox {
+                float: none;
+                width: 100%;
+                margin: 0 0 1rem 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .dashboard-widgets {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-widget .tools-grid,
+            .stats-widget .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-bar {
+                margin: 0 1rem;
+            }
+            
+            .tools-widget .tools-grid,
+            .stats-widget .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .related-articles {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+            <h1>The Diabetes Hub</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search for diabetes information...">
+            <button>🔍</button>
+        </div>
+        <div class="user-info">
+            <div class="avatar">A</div>
+            <div>
+                <div>Admin</div>
+                <small>admin@example.com</small>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-title">MAIN NAVIGATION</div>
+            <ul class="sidebar-menu">
+                <li><a href="/index.html" class="active"><i>🏠</i> Dashboard</a></li>
+                <li><a href="/daibetes-overview.html"><i>📊</i> Diabetes Overview</a></li>
+                <li><a href="frpr1.html"><i>🤖</i> AI Chatbot </a></li>
+                <li><a href="diabetes-causes-page.html"><i>🔍</i> Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html"><i>🤒</i> Symptoms</a></li>
+                <li><a href="/diet-and-nutri.html"><i>🍎</i> Diet & Nutrition</a></li>
+                <li><a href="/treatmenr.html"><i>🏥</i> Treatment Options</a></li>
+                <li><a href="/Exlife.html"><i>🏃‍♀️</i> Exercise & Lifestyle</a></li>
+          
+            </ul>
+            <div class="sidebar-title" style="margin-top: 2rem;">TOOLS & RESOURCES</div>
+            <ul class="sidebar-menu">
+                <li><a href="/carb-calculator.html"><i>🧮</i> Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html"><i>📊</i> A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html"><i>📝</i> Blood Sugar Log</a></li>
+               
+                <li><a href="glossary.html"><i>📚</i> Glossary</a></li>
+                <li><a href="About.html"><i>ℹ️</i> About Us</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h1 class="section-title">Dashboard</h1>
+
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Diabetes Info</title>
+
+            <!-- Stylish Sticky Top Navigation -->
+            <style>
+                body {
+                margin: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                .category-nav {
+                position: sticky;
+                top: 0;
+                background-color: #ffffff;
+                display: flex;
+                gap: 14px;
+                padding: 12px 20px;
+                border-bottom: 1px solid #e0e0e0;
+                z-index: 1000;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+                overflow-x: auto;
+                }
+
+                .category-nav::-webkit-scrollbar {
+                display: none;
+                }
+
+                .category-item {
+                padding: 8px 18px;
+                background-color: #f3f3f3;
+                border-radius: 50px;
+                text-decoration: none;
+                color: #333;
+                font-weight: 500;
+                white-space: nowrap;
+                transition: all 0.3s ease;
+                }
+
+                .category-item:hover {
+                background-color: #e6f0ff;
+                color: #0056b3;
+                }
+
+                .category-item.active {
+                background-color: #007bff;
+                color: #ffffff;
+                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+                }
+
+                /* Just for demo content spacing */
+                .content {
+                padding: 100px 20px;
+                }
+            </style>
+            </head>
+            <body>
+
+            <!-- Sticky Top Category Navigation -->
+            <div class="category-nav">
+                <a href="index.html" class="category-item active">All</a>
+                <a href="daibetes-overview.html" class="category-item">Overview</a>
+                <a href="diabetes-causes-page.html" class="category-item">Causes</a>
+                <a href="diabetes-symptoms-page.html" class="category-item">Symptoms</a>
+                <a href="treatment.html" class="category-item">Treatment Options</a>
+                <a href="Exlife.html" class="category-item">Exercise</a>
+                <a href="diet-and-nutri.html" class="category-item">Diet & Nutrition</a>
+            </div>
+
+            
+            <!-- Main Content Starts -->
+            <div class="content">
+                <h1>Welcome to <span class="highlight">The Diabetes Hub</span></h1>
+                <p>Your trusted source for understanding, managing, and living better with diabetes. Explore the categories above to learn more about symptoms, causes, treatments, and lifestyle changes that matter.</p>
+            </div>
+            
+            <!-- Add styling in the same <style> block or your CSS file -->
+            <style>
+                .content {
+                padding: 40px 20px;
+                max-width: 900px;
+                margin: auto;
+                text-align: center;
+                color: #333;
+                }
+            
+                .content h1 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                color: #007bff;
+                }
+            
+                .content .highlight {
+                color: #0056b3;
+                }
+            
+                .content p {
+                font-size: 1.2rem;
+                line-height: 1.6;
+                }
+            </style>
+  
+
+            </body>
+            </html>
+
+            <!-- Dashboard Widgets -->
+            <div class="dashboard-widgets">
+
+                <!-- Chatbot Widget -->
+                <div class="widget chatbot-widget">
+                <h3 class="widget-title"><i>🤖</i> Diabetes Assistant</h3>
+                <div class="widget-content">
+                    <p>Ask me any question about diabetes, treatment options, diet recommendations, or lifestyle management.</p>
+                    <form class="chatbot-form">
+                    <input type="text" id="question-input" placeholder="e.g., What foods should I avoid with diabetes?">
+                    <button type="button" id="ask-button">Ask</button>
+                    </form>
+                </div>
+                </div>
+
+                <!-- Add this script to handle the button click -->
+                <script>
+                document.getElementById("ask-button").addEventListener("click", function() {
+                    const question = document.getElementById("question-input").value.trim();
+                    if (question) {
+                    // Redirect to frp1.html with the question as a query parameter
+                    window.location.href = `frpr1.html?question=${encodeURIComponent(question)}`;
+                    } else {
+                    alert("Please enter a question!");
+                    }
+                });
+                </script>
+
+                
+                <!-- Statistics Widget -->
+                <div class="widget stats-widget">
+                    <h3 class="widget-title"><i>📊</i> Diabetes Statistics</h3>
+                    <div class="widget-content">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">537M</div>
+                                <div class="stat-label">Adults Living with Diabetes</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">6.7M</div>
+                                <div class="stat-label">Annual Deaths</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">240M</div>
+                                <div class="stat-label">Undiagnosed Cases</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">$966B</div>
+                                <div class="stat-label">Annual Global Cost</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                <!-- Tools Widget -->
+                <div class="widget tools-widget">
+                    <h3 class="widget-title"><i>🧰</i> Quick Tools</h3>
+                    <div class="widget-content">
+                        <div class="tools-grid">
+                            <a href="/carb-calculator.html"> <div class="tool-item">
+                               <div class="tool-icon">🧮</div>
+                                <div class="tool-name">Carb Calculator</div>
+                            </div></a>
+                            <div class="tool-item">
+                                <a href="/a1c-converter.html">
+                                <div class="tool-icon">📊</div>
+                                <div class="tool-name">A1C Converter</div>
+                            </div></a>
+                            <div class="tool-item">
+                                <a href="/a1c-converter.html">
+                                <div class="tool-icon">📝</div>
+                                <div class="tool-name">Blood Sugar Log</div>
+                            </div></a>
+                            <div class="tool-item">
+                                <a href="/frpr1.html">
+                                <div class="tool-icon">🤖</div>
+                                <div class="tool-name">Diabetes Assistant</div>
+                            </div></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget news-widget">
+                <h3 class="widget-title"><i>📰</i> Latest Research & News</h3>
+                <div class="widget-content">
+              
+                  <!-- News Item 1 -->
+                  <div class="news-item">
+                    <div class="news-image">
+                      <img src="/static/images/news1.png" alt="Dexcom G7 CGM Device">
+                    </div>
+                    <div class="news-content">
+                      <div class="news-title">
+                        <a href="https://www.investopedia.com/fda-approves-new-dexcom-diabetes-device-11712756" target="_blank">
+                          FDA Approves Dexcom G7 CGM Device for Adults with Diabetes
+                        </a>
+                      </div>
+                      <div class="news-date">April 11, 2025</div>
+                    </div>
+                  </div>
+              
+                  <!-- News Item 2 -->
+                  <div class="news-item">
+                    <div class="news-image">
+                      <img src="/static/images/news2.png" alt="CagriSema Drug Trial">
+                    </div>
+                    <div class="news-content">
+                      <div class="news-title">
+                        <a href="https://www.reuters.com/business/healthcare-pharmaceuticals/novo-nordisk-says-trial-with-next-gen-obesity-drug-diabetics-shows-157-weight-2025-03-10/" target="_blank">
+                          Novo Nordisk's CagriSema Shows 15.7% Weight Loss in Type 2 Diabetes Trial
+                        </a>
+                      </div>
+                      <div class="news-date">March 10, 2025</div>
+                    </div>
+                  </div>
+              
+                  <!-- News Item 3 -->
+                  <div class="news-item">
+                    <div class="news-image">
+                      <img src="/static/images/news3.png" alt="Diabetes and Cancer Risk Study">
+                    </div>
+                    <div class="news-content">
+                      <div class="news-title">
+                        <a href="https://www.theguardian.com/society/2025/mar/22/type-2-diabetes-increases-risk-of-liver-and-pancreatic-cancers-study-shows" target="_blank">
+                          Study Links Type 2 Diabetes to Increased Risk of Liver and Pancreatic Cancers
+                        </a>
+                      </div>
+                      <div class="news-date">March 22, 2025</div>
+                    </div>
+                  </div>
+              
+                  <!-- News Item 4 -->
+                  <div class="news-item">
+                    <div class="news-image">
+                      <img src="/static/images/news4.png" alt="Smart Insulin Research">
+                    </div>
+                    <div class="news-content">
+                      <div class="news-title">
+                        <a href="https://type1diabetesgrandchallenge.org.uk/news/new-smart-insulin-promising-step-forward-in-type-1-diabetes-treatment/" target="_blank">
+                          New 'Smart Insulin' Shows Promise in Type 1 Diabetes Treatment
+                        </a>
+                      </div>
+                      <div class="news-date">October 17, 2024</div>
+                    </div>
+                  </div>
+              
+                  <!-- News Item 5 -->
+                  <div class="news-item">
+                    <div class="news-image">
+                      <img src="/static/images/news5.png" alt="Low-Cost Diabetes Tool">
+                    </div>
+                    <div class="news-content">
+                      <div class="news-title">
+                        <a href="https://www.news-medical.net/news/20250226/New-low-cost-tool-could-revolutionize-type-2-diabetes-treatment.aspx" target="_blank">
+                          New Low-Cost Tool Could Revolutionize Type 2 Diabetes Treatment
+                        </a>
+                      </div>
+                      <div class="news-date">February 26, 2025</div>
+                    </div>
+                  </div>
+              
+                </div>
+              </div>
+              
+<!-- Footer Section -->
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-column">
+            <div class="footer-logo">
+                <img src="/static/images/logo.png" alt="Diabetes Hub Logo">
+                <h3>The Diabetes Hub</h3>
+            </div>
+            <p class="footer-about">Your trusted resource for comprehensive diabetes information, management tools, and support.</p>
+            <div class="footer-social">
+                <a href="#" class="social-icon">📱</a>
+                <a href="#" class="social-icon">📘</a>
+                <a href="#" class="social-icon">📸</a>
+                <a href="#" class="social-icon">🐦</a>
+            </div>
+        </div>
+        
+        <div class="footer-column">
+            <h4 class="footer-heading">Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/daibetes-overview.html">Diabetes Overview</a></li>
+                <li><a href="/diabetes-causes-page.html">Causes</a></li>
+                <li><a href="/diabetes-symptoms-page.html">Symptoms</a></li>
+                <li><a href="/treatmenr.html">Treatment Options</a></li>
+                <li><a href="/Exlife.html">Exercise & Lifestyle</a></li>
+                <li><a href="/diet-and-nutri.html">Diet & Nutrition</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-column">
+            <h4 class="footer-heading">Tools & Resources</h4>
+            <ul class="footer-links">
+                <li><a href="/carb-calculator.html">Carb Calculator</a></li>
+                <li><a href="/a1c-converter.html">A1C Converter</a></li>
+                <li><a href="/sugar-blood-limit.html">Blood Sugar Log</a></li>
+                <li><a href="/frpr1.html">AI Chatbot</a></li>
+                <li><a href="/glossary.html">Glossary</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-column">
+            <h4 class="footer-heading">Subscribe to Newsletter</h4>
+            <p class="footer-subscribe-text">Stay updated with the latest in diabetes research, management tips, and resources.</p>
+            <form class="footer-subscribe-form">
+                <input type="email" placeholder="Your email address">
+                <button type="submit">Subscribe</button>
+            </form>
+            <p class="footer-disclaimer">We respect your privacy and will never share your information.</p>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="footer-copyright">
+            <p>&copy; 2025 The Diabetes Hub. All rights reserved.</p>
+        </div>
+        <div class="footer-legal-links">
+            <a href="/privacy-policy.html">Privacy Policy</a>
+            <a href="/terms-of-service.html">Terms of Service</a>
+            <a href="/cookies-policy.html">Cookies Policy</a>
+            <a href="/contact-us.html">Contact Us</a>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* Footer Styles */
+    .site-footer {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 3rem 0 1rem;
+        margin-top: 2rem;
+        position: relative;
+    }
+    
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    .footer-column {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 2rem;
+        padding-right: 2rem;
+    }
+    
+    .footer-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-logo img {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+    
+    .footer-logo h3 {
+        color: white;
+        font-size: 1.3rem;
+        margin: 0;
+    }
+    
+    .footer-about {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        color: #ccd6f6;
+    }
+    
+    .footer-social {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .social-icon:hover {
+        background-color: var(--accent-color);
+        transform: translateY(-3px);
+    }
+    
+    .footer-heading {
+        color: white;
+        font-size: 1.1rem;
+        margin-bottom: 1.2rem;
+        position: relative;
+        padding-bottom: 0.8rem;
+    }
+    
+    .footer-heading::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: var(--accent-color);
+    }
+    
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .footer-links li {
+        margin-bottom: 0.7rem;
+    }
+    
+    .footer-links a {
+        color: #ccd6f6;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+        display: inline-block;
+    }
+    
+    .footer-links a:hover {
+        color: var(--accent-color);
+        transform: translateX(5px);
+    }
+    
+    .footer-subscribe-text {
+        color: #ccd6f6;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-subscribe-form {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-subscribe-form input {
+        flex: 1;
+        padding: 0.7rem;
+        border: none;
+        border-radius: 4px 0 0 4px;
+        outline: none;
+        font-size: 0.9rem;
+    }
+    
+    .footer-subscribe-form button {
+        padding: 0 1rem;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .footer-subscribe-form button:hover {
+        background-color: #2980b9;
+    }
+    
+    .footer-disclaimer {
+        font-size: 0.8rem;
+        color: #a8b2d1;
+    }
+    
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem 2rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .footer-copyright {
+        font-size: 0.85rem;
+        color: #a8b2d1;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-legal-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-legal-links a {
+        color: #a8b2d1;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .footer-legal-links a:hover {
+        color: var(--accent-color);
+    }
+    
+    /* Responsive adjustments for footer */
+    @media (max-width: 992px) {
+        .footer-column {
+            flex: 0 0 calc(50% - 2rem);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .footer-column {
+            flex: 0 0 100%;
+            padding-right: 0;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .footer-legal-links {
+            justify-content: center;
+        }
+    }
+</style>             
+            
+
+              
+            

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Nutrition Guide</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2ecc71;
+            --secondary-dark: #27ae60;
+            --warning-color: #e74c3c;
+            --text-color: #333;
+            --light-text: #666;
+            --lighter-text: #999;
+            --background: #f9f9f9;
+            --card-bg: #fff;
+            --border-color: #eaeaea;
+            --success-color: #27ae60;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav li {
+            margin-left: 30px;
+        }
+
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/400') center/cover no-repeat;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin: 50px 0 25px;
+            color: var(--text-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .food-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .food-image {
+            height: 180px;
+            background-color: #f3f3f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-good {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .badge-moderate {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .badge-limit {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .badge-article, .badge-video {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .food-content {
+            padding: 20px;
+        }
+
+        .food-title {
+            font-size: 1.25rem;
+            margin: 0 0 10px;
+            color: var(--text-color);
+        }
+
+        .food-description {
+            color: var(--light-text);
+            margin: 0 0 15px;
+        }
+
+        .meal-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .meal-day {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .meal-day-title {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .meal-time {
+            margin-bottom: 25px;
+        }
+
+        .meal-time-title {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin: 0 0 10px;
+        }
+
+        .meal-items {
+            list-style-type: none;
+            padding-left: 10px;
+            margin: 0;
+        }
+
+        .meal-items li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .meal-items li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+
+        .widget {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .widget-title {
+            background-color: #f6f6f6;
+            padding: 15px 20px;
+            margin: 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 1.2rem;
+        }
+
+        .widget-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .widget-content {
+            padding: 20px;
+        }
+
+        .nutrition-section {
+            margin-bottom: 25px;
+        }
+
+        .nutrition-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .nutrition-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin: 0 0 10px;
+        }
+
+        .nutrition-text {
+            color: var(--light-text);
+            margin-bottom: 15px;
+        }
+
+        .nutrition-list {
+            list-style-type: none;
+            padding-left: 5px;
+            margin: 0;
+        }
+
+        .nutrition-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .nutrition-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+
+        .info-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-card.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .info-card.success {
+            border-left-color: var(--success-color);
+            background-color: #f0f8f1;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .resource-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .resource-image {
+            height: 150px;
+            background-color: #f3f3f3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource-title {
+            font-size: 1.2rem;
+            margin: 0 0 10px;
+            color: var(--text-color);
+        }
+
+        .resource-provider {
+            display: flex;
+            align-items: center;
+            color: var(--lighter-text);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .resource-provider img {
+            margin-right: 8px;
+        }
+
+        .resource-description {
+            color: var(--light-text);
+            margin: 0 0 15px;
+            font-size: 0.95rem;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .resource-rating {
+            color: #f39c12;
+        }
+
+        .resource-price {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .faq-item {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            margin: 0 0 10px;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .faq-question::before {
+            content: 'Q: ';
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .faq-answer {
+            color: var(--light-text);
+            margin: 0;
+        }
+
+        .glossary-term {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .chatbot-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-button:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-column h3 {
+            color: white;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #444;
+            margin-top: 30px;
+            padding-top: 20px;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            display: flex;
+        }
+
+        .social-icons li {
+            margin-right: 15px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .plate-method-image {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .plate-svg {
+            width: 300px;
+            height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                margin-top: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            nav li {
+                margin: 0 10px;
+            }
+
+            .hero {
+                padding: 40px 0;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .meal-plan {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <span class="logo-icon">🍽️</span> Diabetes Nutrition Hub
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="#">Meal Plans</a></li>
+                        <li><a href="#">Diet Approaches</a></li>
+                        <li><a href="">Resources</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+  
+    
+        
+            
+        
+        <!-- Sample Meal Plans -->
+        <h2 class="section-title">Sample Meal Plans</h2>
+        
+        <div class="meal-plan">
+            <!-- Mediterranean-Inspired -->
+            <div class="meal-day">
+                <h3 class="meal-day-title">Sample Day 1: Mediterranean-Inspired</h3>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Breakfast (45g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>½ cup steel-cut oatmeal topped with 1 tablespoon chopped walnuts</li>
+                        <li>¾ cup blueberries</li>
+                        <li>1 boiled egg</li>
+                        <li>Coffee or tea (unsweetened)</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Lunch (45g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>Greek salad with 2 cups leafy greens, cherry tomatoes, cucumber, red onion, 2 oz feta cheese, olives</li>
+                        <li>3 oz grilled chicken breast</li>
+                        <li>1 small whole grain pita bread</li>
+                        <li>1 small apple</li>
+                        <li>Water with lemon</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Afternoon Snack (15g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>¼ cup hummus with 1 cup raw vegetables (carrots, bell peppers, cucumber)</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Dinner (60g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>4 oz baked salmon with lemon and herbs</li>
+                        <li>⅔ cup cooked quinoa</li>
+                        <li>1 cup roasted vegetables (zucchini, bell peppers, eggplant)</li>
+                        <li>Side salad with olive oil and vinegar dressing</li>
+                        <li>½ cup fresh strawberries</li>
+                        <li>Unsweetened iced tea</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Evening Snack (optional, 15g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>1 small orange and 12 almonds</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Plant-Based Focus -->
+            <div class="meal-day">
+                <h3 class="meal-day-title">Sample Day 2: Plant-Based Focus</h3>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Breakfast (45g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>Smoothie bowl: 1 cup unsweetened almond milk, ½ frozen banana, ½ cup frozen berries, 1 tbsp ground flaxseed, 1 scoop plant protein powder</li>
+                        <li>Topped with 1 tbsp chopped nuts and 2 tbsp low-sugar granola</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Lunch (60g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>Bean and vegetable bowl: ½ cup black beans, ½ cup brown rice</li>
+                        <li>Topped with roasted vegetables, avocado slices, salsa, and 2 tbsp plain Greek yogurt</li>
+                        <li>Side of jicama slices with lime</li>
+                        <li>Sparkling water</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Afternoon Snack (15g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>1 small pear with 1 oz cheese</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Dinner (45g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>Stir-fry with tofu, broccoli, mushrooms, snap peas, and bell peppers</li>
+                        <li>⅔ cup cooked buckwheat noodles</li>
+                        <li>1 tangerine</li>
+                        <li>Herbal tea</li>
+                    </ul>
+                </div>
+                
+                <div class="meal-time">
+                    <h4 class="meal-time-title">Evening Snack (optional, 15g carbs)</h4>
+                    <ul class="meal-items">
+                        <li>¾ cup plain Greek yogurt with cinnamon and 2 tsp chopped walnuts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Plate Method -->
+        <div class="widget">
+            <h3 class="widget-title"><i>🍽️</i> The Diabetes Plate Method</h3>
+            <div class="widget-content">
+                <p class="nutrition-text">The Diabetes Plate Method is a simple way to create balanced meals without counting, measuring, or weighing food.</p>
+                
+                <div class="plate-method-image">
+                    <svg class="plate-svg" viewBox="0 0 400 400">
+                        <circle cx="200" cy="200" r="190" fill="#f5f5f5" stroke="#ddd" stroke-width="2"/>
+                        <!-- Plate division lines -->
+                        <path d="M200,10 L200,390" stroke="#ddd" stroke-width="2"/>
+                        <path d="M200,200 L390,200" stroke="#ddd" stroke-width="2"/>
+                        
+                        <!-- Non-starchy vegetables (left half) -->
+                        <path d="M195,195 Q120,100 80,195 Q120,290 195,195" fill="#4CAF50" fill-opacity="0.7"/>
+                        <path d="M195,205 Q100,250 110,300 Q170,330 195,205" fill="#8BC34A" fill-opacity="0.7"/>
+                        <path d="M195,195 Q160,130 100,80 Q60,130 195,195" fill="#CDDC39" fill-opacity="0.7"/>
+                        
+                        <!-- Protein (top right quarter) -->
+                        <path d="M205,195 Q260,120 320,130 Q340,170 205,195" fill="#FF9800" fill-opacity="0.7"/>
+                        <path d="M205,195 Q290,150 340,110 Q320,80 205,195" fill="#FFA726" fill-opacity="0.7"/>
+                        
+                        <!-- Carbs (bottom right quarter) -->
+                        <path d="M205,205 Q240,270 280,290 Q330,260 205,205" fill="#FFC107" fill-opacity="0.7"/>
+                        <path d="M205,205 Q260,240 330,270 Q320,310 205,205" fill="#FFEB3B" fill-opacity="0.7"/>
+                        
+                        <!-- Labels -->
+                        <text x="100" y="200" font-size="16" fill="#333" text-anchor="middle">Non-starchy Vegetables</text>
+                        <text x="100" y="220" font-size="12" fill="#333" text-anchor="middle">(½ plate)</text>
+                        
+                        <text x="300" y="150" font-size="16" fill="#333" text-anchor="middle">Protein</text>
+                        <text x="300" y="170" font-size="12" fill="#333" text-anchor="middle">(¼ plate)</text>
+                        
+                        <text x="300" y="250" font-size="16" fill="#333" text-anchor="middle">Carbs</text>
+                        <text x="300" y="270" font-size="12" fill="#333" text-anchor="middle">(¼ plate)</text>
+                    </svg>
+                </div>
+                
+                <div class="nutrition-section">
+                    <h4 class="nutrition-subtitle">How to Build Your Plate</h4>
+                    <ul class="nutrition-list">
+                        <li><strong>Fill half your plate</strong> with non-starchy vegetables (broccoli, carrots, greens, etc.)</li>
+                        <li><strong>Fill a quarter</strong> with lean protein (chicken, fish, tofu, eggs, etc.)</li>
+                        <li><strong>Fill a quarter</strong> with carbohydrates (whole grains, starchy vegetables, beans, fruit)</li>
+                        <li><strong>Add a small portion</strong> of healthy fats (avocado, nuts, seeds, olive oil)</li>
+                        <li><strong>Choose water</strong> or other zero-calorie drinks</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <p>This method automatically controls your carbohydrate intake without requiring you to count grams. It also ensures you get a good balance of nutrients at each meal.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Special Dietary Considerations -->
+        <div class="widget">
+            <h3 class="widget-title"><i>🔍</i> Special Dietary Considerations</h3>
+            <div class="widget-content">
+                <div class="nutrition-section">
+                    <h4 class="nutrition-subtitle">Type 1 Diabetes</h4>
+                    <p class="nutrition-text">People with Type 1 diabetes need to carefully match insulin doses to carbohydrate intake. Carbohydrate
