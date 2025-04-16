@@ -773,12 +773,20 @@
             <button>🔍</button>
         </div>
         <div class="user-info">
-            <div class="avatar">A</div>
+            <div class="avatar" id="avatar">A</div>
             <div>
-                <div>Admin</div>
-                <small>admin@example.com</small>
+                <div id="user-name">Admin</div>
+                <small id="user-email">admin@example.com</small>
+            </div>
+            <div class="login-link" id="login-link">
+                <a href="login.html">Login</a>
+            </div>
+            <div class="logout-link" id="logout-link" style="display: none;">
+                <a href="#" onclick="logout()">Logout</a>
             </div>
         </div>
+
+
     </header>
     
     <div class="main-container">
@@ -1364,6 +1372,8 @@
     }
 </style>             
             
+
+
 
               
             
